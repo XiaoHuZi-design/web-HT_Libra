@@ -1,0 +1,57 @@
+<!-- _sidebar.md -->
+
+* C++学习
+  * [C++基础知识](/C++学习/C++基础知识.md)
+  * [QT实战](/C++学习/QT实战（C++）.md)
+    * [C++语法](/C++语法/C++复查.md)
+  * C++项目
+    * [通讯录管理系统](/C++语法/通讯录管理系统.md)
+    * [职工管理系统](/C++语法/职工管理系统.md)
+    * [机房预约系统](/C++语法/机房预约系统.md)
+    * [STL演讲比赛系统](/C++语法/基于STL的演讲比赛流程管理系统.md)
+* PYTHON
+  * [PYTHON语法](/PYTHON语法/PYTHON复查.md)
+  * PYTHON项目
+    * 飞机大战
+      * [游戏框架搭建](/PYTHON语法/飞机大战/游戏框架搭建.md)
+      * [pygame](/PYTHON语法/飞机大战/pygame%20快速入门.md)
+      * [游戏背景](/PYTHON语法/飞机大战/游戏背景.md)
+      * [英雄登场](/PYTHON语法/飞机大战/英雄登场.md)
+      * [敌机出场](/PYTHON语法/飞机大战/敌机出场.md)
+      * [碰撞检测](/PYTHON语法/飞机大战/碰撞检测.md)
+      * [项目实战](/PYTHON语法/飞机大战/项目实战%20——%20飞机大战.md)
+    * 坦克大战 
+      * [代码](/PYTHON语法/坦克大战/代码/tank.md)
+      * [资料](/PYTHON语法/坦克大战/资料/resource.md)
+  * python绘图
+    * [matplotlib绘图](/python绘图/matplotlib绘图.md)
+    * [turtle海龟绘图](/python绘图/turtle海龟绘图.md)
+  * python小案例
+    * [爬虫](/python小案例/爬虫.md)
+    * [物体大小与距离检测](/python小案例/物体大小与距离检测.md)
+    * [tcp通信](/python小案例/tcp通信.md)
+* ROS学习
+  * [ROS入门学习](/ROS学习/ROS入门学习.md)
+  * [常用Linux命令](/ROS学习/常用Linux命令.md.md)
+  * [经验_理清环境](/ROS学习/经验_理清环境.md)
+  * [ROS通信](/ROS学习/ROS通信.md)
+  * [ros仿真比赛整理](/ROS学习/ros仿真比赛整理.md)
+  * [导航Action接口](/ROS学习/导航Action接口.md)
+  * [航点导航插件](/ROS学习/航点导航插件.md)
+  * [相机话题](/ROS学习/相机话题.md)
+* STM32
+  * [STM32学习](/STM32/STM32.md)
+* FREERTOS
+  * [FREERTOS学习](/FREERTOS/FREERTOS.md)
+* 深度学习
+  * [深度学习(pytorch)](/深度学习/深度学习（pytorch）.md)
+  * [Pytorch基础知识](/深度学习/Pytorch基础知识.md)
+  * [标注工具](/深度学习/标注工具.md)
+  * [机器学习评估指标等](/深度学习/机器学习评估指标等.md)
+  * [Pytorch模型转ONNX](/深度学习/Pytorch模型转ONNX.md)
+  * [大模型本地部署](/深度学习/大模型本地部署.md)
+* 数字图像处理
+  * [图像处理(C++)](/数字图像处理/图像处理（C++）.md)
+  * [图像处理(Python)](/数字图像处理/图像处理（Python）.md)
+* 学术论文
+  * [学术论文指南](/学术论文/academic_paper.md)
