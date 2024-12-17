@@ -41,8 +41,6 @@
   * [相机话题](/ROS学习/相机话题.md)
 * STM32
   * [STM32学习](/STM32/STM32.md)
-* FREERTOS
-  * [FREERTOS学习](/FREERTOS/FREERTOS.md)
 * 深度学习
   * [深度学习(pytorch)](/深度学习/深度学习（pytorch）.md)
   * [Pytorch基础知识](/深度学习/Pytorch基础知识.md)
@@ -50,6 +48,13 @@
   * [机器学习评估指标等](/深度学习/机器学习评估指标等.md)
   * [Pytorch模型转ONNX](/深度学习/Pytorch模型转ONNX.md)
   * [大模型本地部署](/深度学习/大模型本地部署.md)
+* YOLO
+  * [图像增强（Albumentations）](/YOLO/图像增强（Albumentations）.md)
+  * [Yolov5使用教程](/YOLO/Yolov5使用教程.md)
+  * [Yolov8识别草莓](/YOLO/Yolov8识别草莓.md)
+  * [Yolov8网络详解](/YOLO/Yolov8网络详解.md)
+  * [Yolov10使用教程](/YOLO/Yolov10使用教程.md)
+  * [Yolov10网络详解及C++部署](/YOLO/Yolov10网络详解及C++部署.md)
 * 数字图像处理
   * [图像处理(C++)](/数字图像处理/图像处理（C++）.md)
   * [图像处理(Python)](/数字图像处理/图像处理（Python）.md)

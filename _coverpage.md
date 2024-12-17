@@ -13,7 +13,7 @@
 > 💪采用Docsify与Typora所设计的轻量化日常科研记录，研究方向：机器人、机器视觉、单片机、人工智能以及大模型训练。
 
  便携化办公、学习
-- ROS2 RVIZ GAZEBO RQT TF
+- ROS RVIZ GAZEBO RQT TF
 - STM32 FREERTOS
 - YOLO TRANSFORM 
 - MACHINE LEARNING
