@@ -219,21 +219,14 @@ pre {
             plugins: [
                 function(hook, vm) {
                 hook.beforeEach(function(html) {
-                    var url =
-                    'https://github.com/XiaoHuZi-design/web-HT_Libra/tree/main' +
-                    vm.route.file;
+                    var url = 'https://github.com/XiaoHuZi-design/web-HT_Libra/tree/main' + vm.route.file;
                     var editHtml = '[📝 EDIT DOCUMENT](' + url + ')\n';
 
-                    return (
-                    editHtml +
-                    html +
-                    '\n----\n' +
-                    'Last modified {docsify-updated} ' +
-                    editHtml
-                    );
+                    return editHtml + html + '\n----\n' + 'Last modified {docsify-updated} ' + editHtml;
                 });
                 }
             ],
+
              // 页面右侧toc
             toc: {
             tocMaxLevel: 2,
