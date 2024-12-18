@@ -6,3 +6,6 @@
 ## 服务通信
 ![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1725025597022-d1948141-8ef6-420a-8a1a-7c5ed897acbf.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_1045%2Climit_0)
 
+
+
+![](assets/高木同学.jpg)

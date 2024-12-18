@@ -1,6 +1,6 @@
 <!-- _navbar.md -->
 
-* AI聚合
+* 🤖AI聚合
   * [🔥ChatGPT](https://chatgpt.com/)
   * [🔥V0.dev](https://v0.dev/)
   * [🔥通义千问](https://tongyi.aliyun.com/qianwen/)
@@ -32,7 +32,7 @@
   * [城市租房生存指南](https://zufang.ababtools.com/)
 
 
-* 科研神器
+* 👨‍🎓科研神器
   * [devv.ai](https://devv.ai/zh)
   * [秘塔写作猫](https://metaso.cn/)
   * [paperdigest](https://www.paperdigest.org/)
@@ -52,9 +52,7 @@
 
 
 
-
-
-* 摸鱼
+* 🐟摸鱼
   * [🔥Github/PTF](https://github.com/ruanjianshi/ptf)
   * [坦克大战指南](https://github.com/ruanjianshi/ptf/blob/main/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91.pdf)
   * [微信公众号](https://mp.weixin.qq.com/)
