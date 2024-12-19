@@ -1,3 +1,4 @@
+
 (function () {
     window.$docsify.plugins.push(function (hook) {
         hook.afterEach(function (html) {
