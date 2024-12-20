@@ -3,7 +3,7 @@
 
 【【单片机】野火STM32F103标准外设库(SPL)开发教学视频【全集】-哔哩哔哩】 [https://b23.tv/Zw5oOrp](https://b23.tv/Zw5oOrp)
 
-
+[在线计算器 | 菜鸟工具](https://www.jyshare.com/front-end/6904/)
 
 ## LED点灯
 
@@ -2435,7 +2435,1139 @@ I2C可以利用这个电路特性，执行多主机模式下的时钟同步和�
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734432463641-11296e10-fed3-4e2f-86d2-43fdcad6cdec.png)
 
-看左下角图，在I2C总线处于空闲状态时，SCL和SDA都处于高电平状态，也就是没有任何一个设备去碰SCL和SDA，SCL和SDA由外挂的上拉电阻拉高至高电平，总线处于平静的高电平状态，当主机需要进行数据收发时，首先就要打破总线的宁静，产生一个起始条件，这个起始条件就是SCL处于高电平不去动他，然后把SDA拽下来，产生一个下降沿，当从机捕获到SCL高电平，SDA下降沿信号时，就会进行自身的复位
+看左下角图，在I2C总线处于空闲状态时，SCL和SDA都处于高电平状态，也就是没有任何一个设备去碰SCL和SDA，SCL和SDA由外挂的上拉电阻拉高至高电平，总线处于平静的高电平状态，当主机需要进行数据收发时，首先就要打破总线的宁静，产生一个起始条件，这个起始条件就是SCL处于高电平不去动他，然后把SDA拽下来，产生一个下降沿，当从机捕获到SCL高电平，SDA下降沿信号时，就会进行自身的复位，等待主机的召唤，然后在SDA的下降沿之后，主机要再把SCL拽下来，主机要再把SCL拽下来，拽下SCL，一方面是占用这个总线，另一方面也是为了方便我们这些基本单元的拼接，就是之后我们会保证，除了起始和终止条件，每个时序单元的SCL都是以低电平开始，低电平结束， 这样这些单元拼接起来，SCL才能续得上，
+
+然后继续看终止条件，也就是这样，SCL先放手，回弹到高电平，SDA再放手，回弹高电平，产生一个上升沿，这个上升沿触发终止条件。同时终止条件之后，SCL和SDA都是高电平，回归到最初的平静状态，这个起始条件和终止条件就类似串口时序里的起始位和停止位，一个完整的数据帧，总是以起始条件开始、终止条件结束，
+
+另外，起始和终止，都是由主机产生的，从机不仅允许产生起始和终止，所以在总线空闲状态，从机必须始终双手放开，不允许主动跳出来，去碰总线，如果允许的话，那就是多主机模型，这就是起始条件和终止条件。
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734526164533-eaef77e9-b83a-4e8d-aa61-5913cab54036.png)
+
+接着继续看，在起始条件之后，这时就可以紧跟着一个发送一个字节的时序单元，如何发送一个字节呢，就是上图所示。
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734527000073-253e622f-54b1-4deb-8479-f4ab33b5f072.png)释放SDA其实就相当于切换成输入模式，或者理解为所有设备包括主机都始终处于输入模式，当主机需要发送的时候，就可以主动去拉低SDA，而主机在被动接收的时候，就必须先释放SDA，不要去动它，以免影响别人发送，因为总线是“线与”的特征，任何一个设备拉低了，总线就是低电平，如果你接收的时候，还拽着SDA不放手，那别人不论发什么数据，总线都始终是低电平，你自己给它拽着不放，还让别人怎么发送呢？所有主机在接收之前，需要释放SDA。
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734527149391-ae6a9355-a882-4b1c-b160-5373dda7d18b.png)
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734527614303-0f2f3e40-4c37-4006-a59f-b8ea52b7dde9.png)
+
+这个时序是在示波器下的波形
+
+（可以用逻辑分析仪抓这个波形，而且逻辑分析仪自带协议解析的功能，挺方便的），![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734528423780-a87b5fb2-6a41-4801-ad5b-2396f6dc8798.png)
+
+上面的线是SCL，下面的线是SDA，空闲状态，他俩都是高电平，然后主机需要给从机写入数据的时候，首先SCL高电平期间，拉低SDA，产生起始条件，在起始条件之后，紧跟着的时序，必须是发送一个字节的时序，字节的内容必须是从机地址+读写位，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734528093238-eb2385d6-7adc-4d30-9148-908317f64f89.png)，加起来是一个字节8位，发送从机地址，就是确定通信的对象，发送读写位，就是确认我接下来是要写入还是要读出，在这里，低电平期间，SDA变换数据，高电平期间，从机读取SDA，这里用绿色的线来标明了从机读到的数据，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734528636741-a58b4961-8d24-4cc5-beea-2ce211fb27a9.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734528662571-e924ce5b-0fe4-400e-ac45-3fb733cc8b06.png)
+
+因为第二位还是1，所以这里SDA电平没有变换，然后SCL高电平，从机读到第二位是1，
+
+之后继续，低电平变化数据，高电平读取数据，第三位就是0，这样持续8次就发送一个字节，
+
+其中这个数据的定义是，高七位表示从机地址，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734528956645-c2b30ba2-31d1-40a0-8401-089dcac86296.png)
+
+这个就是MPU6050的从机地址，然后**<font style="color:#DF2A3F;">最低位表示读写位</font>**，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734529201052-0f140d94-4616-4790-9583-b831942eb0b4.png)   ![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734529250760-2f3e3f87-edb1-44d6-839b-79623929221f.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734529353004-2042b514-e5d0-4a51-9629-6a0c47342556.png)
+
+这里是0，说明之后我们要进行写入操作，那目前主机是发送了一个字节，字节的内容转换为16进制，高位先行，就是0xD0，然后**<font style="color:#DF2A3F;">根据协议规定</font>**，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734529548815-489daa68-cfd2-446f-a1b1-b46177b0f82c.png)，
+
+在这个时刻，主机要释放SDA，所有单看主机的SDA波形应该是，释放SDA之后，引脚电平回弹高电平，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734529780229-a2f049fc-07f7-4a9a-8009-f245b788cb83.png)但是根据协议规定，从机要在这个位拉低SDA，所以单看从机的波形应该是，该应答的时候，从机立刻拽住SDA，然后应答结束后，从机再放开SDA，那现在综合两者的波形，结合“线与”的特性，在主机释放SDA之后，由于SDA也被从机拽住了，所以主机松手后，SDA并没有回弹高电平，这个过程，就代表从机产生了应答，最终高电平期间，主机读取SDA，发现是0，就说明，我进行寻址，有人给我应答了，传输没问题，如果主机读取SDA，发现是1，就说明，我进行寻址，应答位期间，我松手了，但是没人拽住它，没人给我应答，那就直接产生停止条件把，并提示一些信息，这就是应答位，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734530364326-39bc2e10-c0f7-4163-9937-80e8ae360710.png)然后这个上升沿，就是应答位结束后，从机释放SDA产生的，从机交出了SDA的控制权，因为从机要在低电平尽快变化数据，所以这个上升沿和SCL的下降沿，几乎是同时发生的，由于之前我们读写位给了0，所以应答结束后，我们要继续发送一个字节，同样的时序，再来一遍，第二个字节，就可以送到指定设备的内部了，从机设备可以自己定义第二个字节和后续字节的用途，一般第二个字节可以是寄存器地址或者是指令控制字等，
+
+比如MPU6050定义的第二个字节就是寄存器地址，
+
+比如AD转换器，第二个字节可能就是指令控制字，
+
+比如存储器，第二个字节可能就是存储器地址，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734530773269-bdfed6c4-a389-4b3e-b461-534549a50a3d.png)
+
+图示这里，主机发送这样一个波形，我们一一判定，数据为0001 1001，即，主机向从机发送了0x19这个数据，在MPU6050里，就表示我们要操作你0x19地址下的寄存器了，接着同样，是从机应答，主机释放SDA，从机拽住SDA，SDA表现为低电平，主机收到应答位为0，表示收到了从机的应答，
+
+然后继续，同样的流程再来一遍，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734532530889-ca8134d4-9d4b-4059-8a58-2db898614bcf.png)
+
+表示，我要在0x19地址下，写入0xAA，如果主机不需要继续传输了，就可以产生停止条件(Stop，P),
+
+在停止条件之前，先拉低SDA，为后续SDA的上升沿作准备，然后释放SCL，再释放SDA，这样就产生了SCL高电平期间，SDA的上升沿，一个完整的数据帧就拼接完成了。
+
+
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734531023956-118a8d12-9965-4e56-a2d8-6d2ba3267698.png)
+
+和前面写过程类似，但比写复杂一点 ... ...
+
+
+
+## MPU6050
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734532954852-167b8c31-44ca-476b-874c-53740979cee1.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734532997233-54b083f7-22a0-4ff9-b703-7160ea2836cc.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734533010554-b62b375d-6156-4fd7-8511-bcb4ce592b54.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734533036642-b34e310f-ada3-4f3d-be7c-112272d9594d.png)
+
+### 软件I2C读取
+代码分为两个部分，第一部分，我们完成软件I2C协议的时序，第二部分，我们基于I2C时序，读写寄存器，来操控MPU6050。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734589437881-9a0b25ca-5b05-4935-be4a-ff18330bfb7c.png)
+
+由于我们这个代码使用的是软件I2C，就是用普通的GPIO口，手动翻转电平实现的协议，它并不需要STM32内部的外设资源支持，所以这里的端口，其实可以任意指定，不局限于这两个端口，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734589801910-35667620-0d3a-42b0-9cf5-9fe116c2108c.png)![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734589844708-23418eea-556e-461c-be3e-3bc212c36c76.png)
+
+接在任意的两个普通的GPIO口都可以，然后我们只需要在程序中配置并操作SCL和SDA对应的端口就行了，这算是软件I2C相比硬件I2C的一大优势(端口不受限可以任意指定)。
+
+根据I2C协议的硬件规定，SCL和SDA都应该外挂一个上拉电阻，但是这里并没有外挂上拉电阻，因为前面我们分析模块电路时提到过，这个模块内部自带了上拉电阻，所以外部的上拉电阻就不需要接了，目前这里STM32是主机，MPU6050是从机，是一主一从的模式，当然主机和从机的执行逻辑是完全不同的，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734591772025-3cb3591a-8d3e-4c43-9559-58d0a5371419.png)
+
+我们程序中，一般只关注主机端的程序，然后后面SCL和SDA用于扩展的接口，AD0引脚，修改从机地址的最低位，这里由于模块内置了下拉电阻，所有引脚悬空的话，就相当于接地，最后INT中断信号输出脚，我们用不到可以不接，这就是硬件电路。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734593012536-1fc6679e-7e2f-4f26-96da-711478d9f9f7.png)
+
+复制一下OLED显示屏的工程，改一下名字，10-1 软件I2C读取MPU6050，
+
+这里，我们首先建立I2C通信层的.c和.h模块，在通信层里，写好I2C底层的GPIO初始化和6个时序基本单元，也就是起始、终止、发送一个字节、接收一个字节、发送应答和接收应答，写好I2C通信层之后，我们再建立MPU6050的.c和.h模块，在这一层，我们将基于I2C通信的模块，来实现指定地址读、指定地址写，再实现写寄存器对芯片进行配置，读寄存器得到传感器数据，最后在main.c里，调用MPU6050的模块，初始化，拿到数据，显示数据，这就是程序的整体架构。
+
+新建I2C模块
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734594531013-14e31e79-12a1-4e1d-930c-d9082db86657.png)
+
+接下来，进行软件I2C初始化，
+
+第一个任务，把SCL和SDA都初始化为开漏输出模式，第二个任务，把SCL和SDA置高电平，
+
+可以打开led.c的文件，复制一下这个GPIO初始化的代码，
+
+```plain
+void MyI2C_Init(void)
+{
+	/*开启时钟*/
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		//开启GPIOA的时钟
+	
+	/*GPIO初始化*/
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);						//将PA1和PA2引脚初始化为推挽输出
+	
+	/*设置GPIO初始化后的默认电平*/
+	GPIO_SetBits(GPIOB, GPIO_Pin_10 | GPIO_Pin_11);	
+}
+```
+
+我们当前的接线，SCL是PB10，SDA是PB11，所以初始化这里，开启时钟，改成GPIOB，端口，改成Pin_10和Pin_11，都配置成开漏输出的模式，那这里，虽然开漏输出，名字上带了个输出，但这并不代表它只能输出，开漏输出模式仍然可以输入，输入时，先输出1，再直接读取输入数据寄存器就行了，这个过程，我们在讲I2C硬件规定时介绍过，那初始化结束之后，调用SetBits，把GPIO的Pin_10和Pin_11，都置高电平，这样I2C的初始化就完成了。
+
+调用MyIC_Init函数，PB10和PB11两个端口，就被初始化为开漏输出模式，然后释放总线，SCL和SDA处于高电平，此时I2C总线处于空闲状态，然后接下来，我们就根据前面讲过的I2C时序波形完成I2C的6个基本时序单元。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734597694218-1a2fe8e2-2797-4e1c-8064-52df8555acec.png)
+
+第一个基本单元是起始条件，
+
+**首先把SCL和SDA都确保释放，然后先拉低SDA，再拉低SCL，这样就能产生起始条件了**，那在这里我们可以不断的调用SetBits和ResetBits，来手动翻转高低电平，但是这样会在后续的程序中出现非常多的地方，来指定这个GPIO端口号，一方面，这样做语义不是很明显，另一方面，如果我们之后需要换一个端口，那就需要改动非常多的地方，所有这时，我们就需要在上面做个定义，把这个端口号统一替换一个名字，这样无论是语义还是端口的修改，都会非常方便，那给端口号换一个名字呢，有很多方法都能实现功能，在51单片机中，我们一般用sbit来定义端口的名称，但是sbit并不是标准C语言的语法，STM32也不支持这样做，那这里，一种简单的替换方法就是宏定义，之后如果想释放SCL，就SetBits - SCL_PORT，SCL_PIN，
+
+SCL_PORT就是GPIOB，SCL_PIN就是GPIO_Pin10，这样语义比较明确，而且修改引脚的时候，直接在上面修改一下宏定义，下面所有引用宏定义的地方，都会自动更改，也可以把整个函数作宏定义替换，但在移植程序是很多人可能不知道怎么修改，另外这种宏定义的方法，如果放在一个主频很高的单片机中，需要对软件时序进行延迟操作的时候，也不太方便进行进一步修改，综合以上缺点，直接对操作端口的库函数进行封装，
+
+```plain
+#include "stm32f10x.h"                  // Device header
+#include "Delay.h"
+
+//封装SCL和SDA
+void MyI2C_W_SCL(uint8_t BitValue) //写
+{
+	GPIO_WriteBit(GPIOB, GPIO_Pin_10, (BitAction)BitValue);
+	Delay_us(10);
+}
+
+void MyI2C_W_SDA(uint8_t BitValue) //写
+{
+	GPIO_WriteBit(GPIOB, GPIO_Pin_11, (BitAction)BitValue);
+	Delay_us(10);
+}
+
+uint8_t MyI2C_R_SDA(void)  //读
+{
+	uint8_t BitValue;
+	BitValue = GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11);
+	Delay_us(10);
+	return BitValue;
+}
+
+
+void MyI2C_Init(void)
+{
+	/*开启时钟*/
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		//开启GPIOA的时钟
+	
+	/*GPIO初始化*/
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);						//将PA1和PA2引脚初始化为推挽输出
+	
+	/*设置GPIO初始化后的默认电平*/
+	GPIO_SetBits(GPIOB, GPIO_Pin_10 | GPIO_Pin_11);	
+}
+
+```
+
+<font style="color:#DF2A3F;">当我们需要替换端口或者把这个函数移植到别的单片机中时，就只需要对这前四个函数里的操作对应更改，然后后面的操作我们都调用这里封装的新函数名称进行操作，这样在移植的时候，后面的部分就不需要进行修改了。</font>
+
+```plain
+//起始条件
+void MyI2C_Start(void)
+{
+	//释放SCL和SDA 置1
+	MyI2C_W_SDA(1);  
+	MyI2C_W_SCL(1);
+	//先拉低SDA,再拉低SCL
+	MyI2C_W_SDA(0);
+	MyI2C_W_SCL(0);
+}
+```
+
+然后是终止条件，在这里如果Stop开始时，SCL和SDA都已经是低电平了，那就先释放SCL，再释放SDA就行了，
+
+但是在这个时序单元开始时，SDA并不一定是低电平，所以为了确保之后释放SDA能产生上升沿，我们要在时序单元开始时，先拉低SDA，然后再释放SCL，释放SDA，所以在程序里，Stop的逻辑是，先**拉低SDA，在释放SCL，再释放SDA，这就是终止条件**。
+
+```plain
+//终止条件
+void MyI2C_Stop(void)
+{
+	MyI2C_W_SDA(0);  
+	MyI2C_W_SCL(1);
+	MyI2C_W_SDA(1);
+}
+```
+
+（除了终止条件SCL是以高电平结束，所有的单元我们都会保证SCL以低电平结束，这样方便各个单元的拼接）
+
+
+
+**接下来是发送字节，发送一个字节开始时，SCL是低电平，**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734602029885-32349848-3043-4d8f-b91d-379fb71b9fcb.png)
+
+```plain
+//发送一个字节
+void MyI2C_SendByte(uint8_t Byte)
+{
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+	{
+		MyI2C_W_SDA(Byte & (0x80 >> i));  //每次循环右移i位
+		MyI2C_W_SCL(1);  //这里释放SCL之后，从机会立刻把放在SDA里的数据读走
+		MyI2C_W_SCL(0);  //再拉低SCL，可以继续放下一位数据
+	}
+	
+//	MyI2C_W_SDA(Byte & 0x80);
+//	MyI2C_W_SCL(1);  //这里释放SCL之后，从机会立刻把放在SDA里的数据读走
+//	MyI2C_W_SCL(0);  //再拉低SCL，可以继续放下一位数据
+//	
+//	MyI2C_W_SDA(Byte & 0x40);   //取出次高位
+//	MyI2C_W_SCL(1);  //然后再驱动SCL,来一个时钟
+//	MyI2C_W_SCL(0);
+//	
+//	MyI2C_W_SDA(Byte & 0x20);  
+//	MyI2C_W_SCL(1);  
+//	MyI2C_W_SCL(0);
+//	
+//	//...循环8次
+}
+```
+
+
+
+**接下来是接收一个字节，接收一个字节时序开始时，SCL低电平，此时从机需要把数据放在SDA上**，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734603025069-2d89f3a7-4114-484f-956b-ed415de1909f.png)
+
+为了防止主机干扰从机写入数据，主机需要先释放SDA，释放SDA也相当于切换为输入模式，那在SCL低电平时，从机会把数据放在SDA，如果从机想发1就释放SDA，如果从机想发0，就拉低SDA，然后主机释放SCL，在SCL高电平期间，读取SDA，再拉低SCL，低电平期间，从机就会把下一位数据放在SDA上，这样重复8次，主机就能读到一个字节了。
+
+SCL低电平变换数据，高电平读取数据，实际上是一种读取分离的设计，低电平设计定义为写的时间，高电平设计定义为读的时间，就像我们小时候玩的123木头人的游戏，主机说123，这个时候大家该动就可以动，主机说木头人，这个时候所有人就都不能动了，这个读写数据就是类似的流程，那在SCL高电平期间，如果你非要动SDA来破坏游戏规则的话，那这个信号就是起始条件和终止条件，SCL高电平时，SDA下降沿为起始条件，SDA上升沿为终止条件，这个设计也保证了起始和终止的特异性，能够让我们在连续不断的波形中，快速定位起始和终止。
+
+```plain
+//接收一个字节
+uint8_t MyI2C_ReceiveByte(void)
+{
+	uint8_t i, Byte = 0x00;
+	MyI2C_W_SDA(i);
+	for (i = 0; i < 8; i++)
+	{
+		MyI2C_W_SCL(1);
+		if (MyI2C_R_SDA() == 1){Byte |= (0x80 >> i);}
+		MyI2C_W_SCL(0);
+	}
+	return Byte;
+}
+```
+
+
+
+**然后继续是发送应答和接收应答**，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734607263860-83a9d1c4-c76b-4148-b67b-acc7fb16df6e.png)
+
+其实就是发送一个字节和接收一个字节的简化版，
+
+发送一个字节是发8位，发送应答是发1位，
+
+接收一个字节是收8位，接收应答是收1位，
+
+所以直接复制上面两个函数修改一下就行了。
+
+```plain
+//发送应答
+void MyI2C_SendAck(uint8_t AckBit)
+{
+	MyI2C_W_SDA(AckBit);  
+	MyI2C_W_SCL(1);  
+	MyI2C_W_SCL(0);  
+
+}
+
+//接收应答
+uint8_t MyI2C_ReceiveAck(void)
+{
+	uint8_t AckBit;
+	MyI2C_W_SDA(1);
+	MyI2C_W_SCL(1);
+	AckBit = MyI2C_R_SDA();
+	MyI2C_W_SCL(0);
+	return AckBit;
+}
+```
+
+接收应答现在的逻辑是，函数进来时SCL低电平，主机释放SDA，防止从机干扰，同时从机把应答位放在SDA上，SCL高电平，主机读取应答位，SCL低电平，进入下一个时序单元。
+
+<font style="color:#DF2A3F;">在这个地方，有人会有疑惑，说程序里，主机先把SDA置1了，然后再读取SDA，这应答位肯定是1啊？</font>
+
+这说明有两个地方理解有误，**第一**，I2C的引脚都是开漏输出+弱上拉的配置，主机输出1并不是强置SDA为高电平，而是释放SDA，**第二**，你要明白I2C是在进行通信，主机释放了SDA，那从机又不是在外面看戏，如果从机在的话它是有义务在此时把SDA拉低的，所以这里即使之前主机把SDA置1了，之后再读取SDA，读取的值也可能是0，读到0代表了从机给了应答，读到1代表从机没给应答，这时接收应答的执行流程。
+
+
+
+到这里，I2C通信的6个时序基本单元就完成了。
+
+
+
+接下来进行测试，我们按照下面**指定地址写**和**指定地址读**的时序结构图片来拼接完整的时序，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734609549866-0671b288-5699-45ed-a1b9-47e8b6ea7682.png)
+
+图1 指定地址写
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734609566106-8bb7e7ff-1f02-4572-aadb-7dc460268328.png)
+
+图2 指定地址读
+
+在这里主机如果想开始一次传输，首先需要调用Start，对应程序这里就是	MyI2C_Start() ，产生起始条件，开始一次传输，之后根据协议规定，起始之后，主机必须首先发送一个字节，内容是从机地址+读写位，进行寻址，对应程序这里就是MyI2C_SendByte，发送一个字节的内容是0xD0，换成二进制就是1101 000 0，前七位从机地址，1101 000 是MPU6050的从机地址，最后一位读写位，0代表即将进行写入操作，这样寻址就完成了，接着继续发送一个字节之后，我们要接收一下应答位，看看从机有没有收到刚才的数据，对应程序这里就是MyI2C_ReceiveAck，返回值定义一个Ack变量来接收一下，这样我们判断这个Ack的值，就知道从机有没有给我应答了，之后继续，接收应答之后，我们要继续再发送一个字节写入寄存器地址，这里已经接收到应答位了，后面我们暂时不写，直接快进停止，之后在OLED屏上显示一下Ack，看看是1还是0。
+
+```plain
+	OLED_Init();		//OLED初始化
+	
+	MyI2C_Init();
+	
+	MyI2C_Start();
+	MyI2C_SendByte(0xD0);   //1101 000 0
+	uint8_t Ack = MyI2C_ReceiveAck();
+	MyI2C_Stop();
+	
+	OLED_ShowNum(1, 1, Ack, 3);
+```
+
+这样就是个测试从机给不给应答的简化时序， 目前时序的流程，带入一下老师在课堂上课的场景解释一下，就是主机起始，也就是老师说，所有人给我听好了，我要点名了，那这时下面的学生，无论是睡觉的、走神的还是说小话的，都肯定立刻打起精神了，等待老师的召唤，然后主机寻址，就是老师说，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734611685188-534f137e-dd53-4641-b5c6-32706716a67c.png)
+
+之后主机接收应答，如果班里确实有这个人，那MPU6050必须在此时说，我在，对应应答位就是低电平，如果没有这号人，那就没有应答，应答位是默认的高电平，应答之后，主机应该就继续说话了，但是这里我目前啥都不说，直接停止，让这个同学坐下，我其实啥都不想说，就是看看你这个人在不在，所以这个精简的时序，你可以把它看成是点名时序。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734612065324-72a24ec5-1af5-4363-83d0-73b110887959.png)目前OLED显示的是0，也就是应答位为0，
+
+说明我点名MPU6050，它给我应答了，现象没问题。
+
+注：芯片默认上电之后是睡眠模式，睡眠模式写入寄存器是无效的，所以这个完整的时序先别急
+
+把寻址改成0xA0，我们总线上没有这个设备，按理说就没有应答了，发现显示应答位为1，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734612233580-a60e4c19-3478-40ba-9af7-ecac434cadd6.png)
+
+符合我们的预期。
+
+所以在程序这里，我们可以利用这个点名的时序，来完成一个功能，就是**从机地址的扫描**，我们可以利用for循环把这个程序套起来，遍历一下所有的从机地址，然后把应答位为0的地址统计下来，这样就能实现扫描总线上设备的功能了，这个功能感兴趣的话可以自己试一下，不过注意一下，遍历的时候，只遍历前7位地址就行了，最后一位要始终保持为0，否则一旦你交出了总线控制权，从机就会干扰你后续的遍历，这是这个功能。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734612874722-603105da-b867-4e05-80cd-7e9d06092525.png)
+
+这时，MPU6050的从机地址就是1101 001了，对应班级里的学生，地址就是学生的姓名，老师点名的时候用的，我们复位一下，可以看到，我们再用原来的1101 000 的名字叫它，它就不理人了，![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734617126750-4d1e038f-d790-46f6-bea2-153a6414d0d4.png)
+
+那在程序中，我们修改寻址，用新名字1101 001去叫它试一下，对应16进制为0xD2，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734617209896-e3445222-3bb9-4e0c-adf2-b2386d54b758.png)改名之后用新名字去叫它，它就回应了。
+
+**目前我们这个芯片只有AD0一个引脚，它就只能拥有总共两个名字**，如果有AD0和AD1两个引脚，那就可以拥有总共4个名字，如果有更多的可配置引脚，那就有更多的改名机会，当你需要一条总线挂载多个相同型号的设备时，就可以利用这个改名的功能，避免名字，也就是从机地址的重复，这是这个功能，好，那我们目前已经大体上验证了这个I2C时序的功能，目前这个点名应答的功能是没有问题的，这说明硬件和这几个时序没问题。
+
+
+
+接下来继续写建立在MyI2C模块之上的MPU6050模块，在Hardware目录下新建一个模块，名字叫MPU6050,
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734617999419-4e897b03-62e5-4540-a562-a990a07b0aa0.png)
+
+```plain
+#include "stm32f10x.h"                  // Device header
+#include "MyI2C.h"
+
+#define MPU6050_ADDRESS		0xD0		//MPU6050的I2C从机地址
+
+/**
+  * 函    数：MPU6050写寄存器
+  * 参    数：RegAddress 寄存器地址，范围：参考MPU6050手册的寄存器描述
+  * 参    数：Data 要写入寄存器的数据，范围：0x00~0xFF
+  * 返 回 值：无
+  */
+void MPU6050_WriteReg(uint8_t RegAddress, uint8_t Data)
+{
+	MyI2C_Start();						//I2C起始
+	MyI2C_SendByte(MPU6050_ADDRESS);	//发送从机地址，读写位为0，表示即将写入
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_SendByte(RegAddress);			//发送寄存器地址
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_SendByte(Data);				//发送要写入寄存器的数据
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_Stop();						//I2C终止
+}
+
+```
+
+```plain
+/**
+  * 函    数：MPU6050读寄存器
+  * 参    数：RegAddress 寄存器地址，范围：参考MPU6050手册的寄存器描述
+  * 返 回 值：读取寄存器的数据，范围：0x00~0xFF
+  */
+uint8_t MPU6050_ReadReg(uint8_t RegAddress)
+{
+	uint8_t Data;
+	
+	MyI2C_Start();						//I2C起始
+	MyI2C_SendByte(MPU6050_ADDRESS);	//发送从机地址，读写位为0，表示即将写入
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_SendByte(RegAddress);			//发送寄存器地址
+	MyI2C_ReceiveAck();					//接收应答
+	
+	MyI2C_Start();						//I2C重复起始
+	MyI2C_SendByte(MPU6050_ADDRESS | 0x01);	//发送从机地址，读写位为1，表示即将读取
+	MyI2C_ReceiveAck();					//接收应答
+	Data = MyI2C_ReceiveByte();			//接收指定寄存器的数据
+	MyI2C_SendAck(1);					//发送应答，给从机非应答，终止从机的数据输出
+	MyI2C_Stop();						//I2C终止
+	
+	return Data;
+}
+```
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734665540348-4fd02ca1-2519-40df-aba8-02abcbe656a3.png)
+
+芯片的ID号，WHO_AM_I寄存器，它是只读的，地址是0x75，内容是ID号，默认值是0x68
+
+```plain
+uint8_t ID = MPU6050_ReadReg(0x75);  //读寄存器 0x75 
+OLED_ShowHexNum(1, 1, ID, 2);  //显示芯片ID号 68
+```
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734665956222-c8c779eb-c72d-49e5-9f59-c1ee8027092d.png)
+
+
+
+**可以发现读寄存器没问题**，接下来验证一下写寄存器，写寄存器之前需要先解除睡眠，否则写入无效
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734666106149-f2c6e0eb-bdb2-43ad-a122-dfd7380a66d5.png)
+
+睡眠模式是电源管理寄存器1的这一位SLEEP控制的，我们可以直接把这个寄存器写入0x00，这样就能解除睡眠模式了，寄存器地址是0x6B
+
+```plain
+MPU6050_WriteReg(0x6B, 0x00); //在电源管理寄存器1写入0x00，解除睡眠模式
+```
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734666763072-3986277f-556d-4d25-9ef0-70da9e6538fb.png)
+
+再换一个寄存器写试一下，比如采样率分频寄存器![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734666916708-f69c78c1-3c17-4414-aed3-ef9ed44b127b.png)，它的地址是0x19，值的内容是采样分频
+
+```plain
+MPU6050_WriteReg(0x19, 0xAA); //随便写入一个0xAA
+```
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734667094739-9c48252f-31d5-488c-9f0c-dc9497b73e36.png)
+
+改写入0x66，则显示66。**说明了读写寄存器是没有问题的**。
+
+目前我们是吧MPU6050当一个存储器来使用的，写某个存储器，读某个存储器，其实读写真正的存储器芯片也是完全一样的逻辑。寄存器也是一种存储器，只不过普通的存储器只能写和读，里面的数据并没有赋予什么实际意义，但是寄存器就不一样了，里面的每一位数据都对应了硬件电路的状态，寄存器和外设的硬件电路是可以进行互动的，**所以程序到这里，我们可以通过寄存器来控制电路了**。
+
+
+
+下面继续对MPU6050硬件电路进行初始化配置，
+
+**初始化第一步，配置电源管理寄存器**，
+
+可以把寄存器的地址都用一个字符串来表示，要不然每次都查手册比较麻烦，而且光写个数据的地址也不容易理解，寄存器比较少的话可以直接在这上面宏定义，寄存器比较多的话可以新建一个单独的头文件存放，省的放在这里比较占地方。
+
+这里在Hardware右键新建一个头文件MPU6050_Reg.h，
+
+```plain
+#ifndef __MPU6050_REG_H
+#define __MPU6050_REG_H
+
+// #define   寄存器的名称     寄存器的地址
+#define	MPU6050_SMPLRT_DIV		0x19
+#define	MPU6050_CONFIG			0x1A
+#define	MPU6050_GYRO_CONFIG		0x1B
+#define	MPU6050_ACCEL_CONFIG	0x1C
+
+#define	MPU6050_ACCEL_XOUT_H	0x3B
+#define	MPU6050_ACCEL_XOUT_L	0x3C
+#define	MPU6050_ACCEL_YOUT_H	0x3D
+#define	MPU6050_ACCEL_YOUT_L	0x3E
+#define	MPU6050_ACCEL_ZOUT_H	0x3F
+#define	MPU6050_ACCEL_ZOUT_L	0x40
+#define	MPU6050_TEMP_OUT_H		0x41
+#define	MPU6050_TEMP_OUT_L		0x42
+#define	MPU6050_GYRO_XOUT_H		0x43
+#define	MPU6050_GYRO_XOUT_L		0x44
+#define	MPU6050_GYRO_YOUT_H		0x45
+#define	MPU6050_GYRO_YOUT_L		0x46
+#define	MPU6050_GYRO_ZOUT_H		0x47
+#define	MPU6050_GYRO_ZOUT_L		0x48
+
+#define	MPU6050_PWR_MGMT_1		0x6B
+#define	MPU6050_PWR_MGMT_2		0x6C
+#define	MPU6050_WHO_AM_I		0x75
+
+#endif
+```
+
+包含头文件 
+
+```plain
+#include "MPU6050_Reg.h"
+```
+
+
+
+**电源管理寄存器1**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734673499467-6bafbb31-d98c-4249-a6c4-c7c854d932a3.png)
+
+    0             0            0              0             0                     0   0  1
+
+设备复位给0，不复位；睡眠模式，给0，解除睡眠；
+
+循环模式，给0，不需要循环；无关为，给0即可；温度传感器失能，给0，不失能；
+
+最后3位选择时钟，给000，选择内部时钟，给001，则选择X轴的陀螺仪时钟。
+
+所以这里这个寄存器写入的数据就是0x01
+
+```plain
+MPU6050_WriteReg(MPU6050_PWR_MGMT_1, 0x01);
+```
+
+
+
+**电源管理寄存器2**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734674159484-9af319d4-6bf6-4600-b29a-f15510bdf3ba.png)
+
+前两位，循环模式唤醒频率，给00，不需要，后六位，每一个轴的待机位，全都给0，不需要待机，所以这个寄存器写入的值就是0x00.
+
+```plain
+MPU6050_WriteReg(MPU6050_PWR_MGMT_2, 0x00);
+```
+
+
+
+**采用率分频寄存器**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734674497714-5000e677-4465-4e3b-a33d-4d9fec3b7888.png)
+
+这8位决定了数据输出的快慢，值越小越快，这个可以根据实际需求来，我们给个0x09也就是10分频
+
+```plain
+MPU6050_WriteReg(MPU6050_SMPLRT_DIV, 0x09);
+```
+
+
+
+**配置寄存器**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734674699692-4e0d1090-d0fa-4f61-98de-e2808ffb3420.png)
+
+                                                                               1   1   0
+
+在这里，外部同步，全都给0，不需要；数字低通滤波器，这个也是根据需求来，我们可以给个110，这个就是最平滑的滤波，所以这整个寄存器的值就是0x06，在这里给0x06
+
+```plain
+MPU6050_WriteReg(MPU6050_CONFIG, 0x06);	
+```
+
+
+
+**陀螺仪配置寄存器**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734675047340-6b7f85e4-926e-4c97-8df8-55b989192089.png)
+
+                                                           0             0             0             1         1               0            0             0
+
+前三位是自测使能，这里手册写漏了，我们就不自测了，全部写0；满量程选择，这个也是根据需求来，我们就给11，选择最大量程；后面三位无关位。所以这个寄存器就是0x18
+
+```plain
+MPU6050_WriteReg(MPU6050_GYRO_CONFIG, 0x18);
+```
+
+
+
+**加速度计配置寄存器**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734675673603-f742ec2d-9e2a-437e-bb34-f9ae8605bf0b.png)
+
+            0             0            0               1     1                        0     0     0
+
+在这里，自测给000；满量程，暂时也给最大量程11；最后高通滤波器我们用不到，给000；所以这个寄存器的值也是0x18
+
+```plain
+MPU6050_WriteReg(MPU6050_ACCEL_CONFIG, 0x18);
+```
+
+
+
+这样，MPU6050初始化配置就完成了。
+
+```plain
+/**
+  * 函    数：MPU6050初始化
+  * 参    数：无
+  * 返 回 值：无
+  */
+void MPU6050_Init(void)
+{
+	MyI2C_Init();									//先初始化底层的I2C
+	
+	/*MPU6050寄存器初始化，需要对照MPU6050手册的寄存器描述配置，此处仅配置了部分重要的寄存器*/
+	MPU6050_WriteReg(MPU6050_PWR_MGMT_1, 0x01);		//电源管理寄存器1，取消睡眠模式，选择时钟源为X轴陀螺仪
+	MPU6050_WriteReg(MPU6050_PWR_MGMT_2, 0x00);		//电源管理寄存器2，保持默认值0，所有轴均不待机
+	MPU6050_WriteReg(MPU6050_SMPLRT_DIV, 0x09);		//采样率分频寄存器，配置采样率
+	MPU6050_WriteReg(MPU6050_CONFIG, 0x06);			//配置寄存器，配置DLPF
+	MPU6050_WriteReg(MPU6050_GYRO_CONFIG, 0x18);	//陀螺仪配置寄存器，选择满量程为±2000°/s
+	MPU6050_WriteReg(MPU6050_ACCEL_CONFIG, 0x18);	//加速度计配置寄存器，选择满量程为±16g
+}
+```
+
+配置完之后，陀螺仪内部就在连续不断地进行数据转换了，输出的数据，就存放在这里的数据寄存器里，接下来我们想获取数据的话，只需要再写一个获取数据寄存器的函数即可。
+
+根据任务需求，这个函数需要返回6个int16_t的数据，分别表示XYZ的加速度值和陀螺仪值，但是C语言中函数返回的值只能有一个，所以这里就需要一些特殊操作来实现返回6个值的任务，这里使用指针的地址传递来实现，
+
+```plain
+void MPU6050_GetData(int16_t *AccX, int16_t *AccY, int16_t *AccZ, 
+						int16_t *GyroX, int16_t *GyroY, int16_t *GyroZ)
+```
+
+这6个参数均是int16_t的指针类型，之后我们会**在主函数里定义变量，通过指针把主函数变量的地址传递到子函数来，子函数中，通过传递过来的地址，操作主函数的变量，这样子函数结束之后，主函数变量的值，就是子函数想要返回的值，这就是使用指针实现函数多返回值的设计。**
+
+```plain
+/**
+  * 函    数：MPU6050获取数据
+  * 参    数：AccX AccY AccZ 加速度计X、Y、Z轴的数据，使用输出参数的形式返回，范围：-32768~32767
+  * 参    数：GyroX GyroY GyroZ 陀螺仪X、Y、Z轴的数据，使用输出参数的形式返回，范围：-32768~32767
+  * 返 回 值：无
+  */
+void MPU6050_GetData(int16_t *AccX, int16_t *AccY, int16_t *AccZ, 
+						int16_t *GyroX, int16_t *GyroY, int16_t *GyroZ)
+{
+	uint8_t DataH, DataL;								//定义数据高8位和低8位的变量
+	
+	DataH = MPU6050_ReadReg(MPU6050_ACCEL_XOUT_H);		//读取加速度计X轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_ACCEL_XOUT_L);		//读取加速度计X轴的低8位数据
+	*AccX = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_ACCEL_YOUT_H);		//读取加速度计Y轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_ACCEL_YOUT_L);		//读取加速度计Y轴的低8位数据
+	*AccY = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_ACCEL_ZOUT_H);		//读取加速度计Z轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_ACCEL_ZOUT_L);		//读取加速度计Z轴的低8位数据
+	*AccZ = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_GYRO_XOUT_H);		//读取陀螺仪X轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_GYRO_XOUT_L);		//读取陀螺仪X轴的低8位数据
+	*GyroX = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_GYRO_YOUT_H);		//读取陀螺仪Y轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_GYRO_YOUT_L);		//读取陀螺仪Y轴的低8位数据
+	*GyroY = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_H);		//读取陀螺仪Z轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_L);		//读取陀螺仪Z轴的低8位数据
+	*GyroZ = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+}
+```
+
+
+
+```plain
+#include "stm32f10x.h"                  // Device header
+#include "Delay.h"
+#include "OLED.h"
+#include "MPU6050.h"
+
+int16_t AX, AY, AZ, GX, GY, GZ;
+
+int main(void)
+{
+	/*模块初始化*/
+	OLED_Init();		//OLED初始化
+	
+	MPU6050_Init();
+	
+	while (1)
+	{
+		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
+		OLED_ShowSignedNum(2, 1, AX, 5);
+		OLED_ShowSignedNum(3, 1, AY, 5);
+		OLED_ShowSignedNum(4, 1, AZ, 5);
+		OLED_ShowSignedNum(2, 8, GX, 5);
+		OLED_ShowSignedNum(3, 8, GY, 5);
+		OLED_ShowSignedNum(4, 8, GZ, 5);
+	}
+}
+```
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734677790181-f5f6fe7b-83e8-491f-bdc3-5dcc7088689b.png)
+
+到这里MpU6050基本上是配置完了，最后把获取ID号也加上去
+
+```plain
+/**
+  * 函    数：MPU6050获取ID号
+  * 参    数：无
+  * 返 回 值：MPU6050的ID号
+  */
+uint8_t MPU6050_GetID(void)
+{
+	return MPU6050_ReadReg(MPU6050_WHO_AM_I);		//返回WHO_AM_I寄存器的值
+}
+```
+
+```plain
+#include "stm32f10x.h"                  // Device header
+#include "Delay.h"
+#include "OLED.h"
+//#include "MyI2C.h"
+#include "MPU6050.h"
+
+int16_t AX, AY, AZ, GX, GY, GZ;
+uint8_t ID;
+
+int main(void)
+{
+	/*模块初始化*/
+	OLED_Init();		//OLED初始化
+	
+	MPU6050_Init();
+	
+//	MPU6050_WriteReg(0x6B, 0x00); //在电源管理寄存器1写入0x00，解除睡眠模式
+//	MPU6050_WriteReg(0x19, 0x66);
+//	uint8_t ID = MPU6050_ReadReg(0x19);  //读芯片ID号寄存器 
+//	OLED_ShowHexNum(1, 1, ID, 2);
+	
+	OLED_ShowString(1 ,1, "ID:");
+	ID = MPU6050_GetID();
+	OLED_ShowHexNum(1, 4, ID, 2);
+	
+	while (1)
+	{
+		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
+		OLED_ShowSignedNum(2, 1, AX, 5);
+		OLED_ShowSignedNum(3, 1, AY, 5);
+		OLED_ShowSignedNum(4, 1, AZ, 5);
+		OLED_ShowSignedNum(2, 8, GX, 5);
+		OLED_ShowSignedNum(3, 8, GY, 5);
+		OLED_ShowSignedNum(4, 8, GZ, 5);
+	}
+}
+```
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734678414641-e8ca19e1-dab4-4b43-842d-86d7396e1a62.png)
+
+
+
+### 硬件I2C读取
+前面我们已经了解了I2C的协议规定和通信意义，并且我们也用GPIO口模拟的I2C实现了读写MPU6050的程序，在这个过程中，我们可以发现，这个通信协议的时序是一个很重要的东西，我们只要理解清楚了这个时序的意义，就可以按照这个协议的规定，去翻转通信引脚的高低电平，只要我们翻转产生的这个时序波形满足了这个通信协议的规定，那通信双方就能理解并解析这个波形，这样通信自然而然就能实现了，那之前的课程我们用的是软件I2C，手动拉低或释放时钟线，然后再手动对每个数据位进行判断，拉低或释放数据线，这样来产生这个的波形。
+
+**由于I2C是同步时序，这每一位的持续时间要求不严格，某一位的时间长点断点，或者中途暂停一会时序，影响都不大，所以I2C是比较容易用软件模拟的**。
+
+但是作为一个协议标准，I2C通信也是可以有硬件收发电路的，就像之前的串口通信一样。
+
+【我们先讲了这个串口的时序波形，但是在程序中，我们并没有用软件去手动翻转电平来实现这个波形，这时因为串口是异步时序，每一位的时间要求很严格，不能过长也不能过短，更不能中途暂停一会，所以串口时序虽然可以用软件模拟，但是操作起来比较困难。
+
+由于串口的硬件收发器在单片机中的普及程度非常高，基本上每个单片机都有串口的硬件资源，而且硬件实现的串口使用起来还非常简单，所以串口通信，我们基本都是借助硬件收发器来实现的。】
+
+
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734679175672-64ce022b-cca6-4d2e-9797-4896afb1bf92.png)
+
+I2C的硬件实现，STM32内部的I2C外设
+
+I2C通信分为主机和从机，主机就是拥有主动控制总线的权利，而从机只能在主机允许的情况下才能控制总线，
+
+在一主多从的模型下，如下图1个主机下面可以挂载多个从机，这种比较简单，即主机一个人掌控所所有，所以从机都得听它的，不存在什么权利冲突。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734682000051-24019fc2-0152-4892-8adf-4f603afa838c.png)
+
+那进阶版的I2C还涉及了多主机的模型，对于多主机模型又可以分为固定多主机和可变多主机，
+
+**固定多主机**就是在这条总线上，有两个或更多固定的主机，上面这几个始终固定为主机，下面这几个始终固定为从机，这个状态就是像在教室里，讲台上同时站了多个老师，下面坐的所有学生都可以被任意一个老师点名，老师可以主动发起对学生的控制，学生不能去控制老师，当两个老师同时想说话时，就是总线冲突状态，这时就要进行总线制裁了，仲裁失败的一方让出总线控制权，那目前这种讲台上站多个老师的情况，就是固定多主机。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734682515520-18854a5b-a76b-4826-a924-75e1a3cb717c.png)
+
+然后**可变多主机**的意思是，假设这是I2C总线，可以挂载多个设备，总线上没有固定的主机和从机，任意一个设备都可以在总线空闲的时候跳出来作为主机，然后指定其他任何一个设备进行通信，当这个通信完成之后，这个跳出来的主机就要退回从机的位置，这就像在教师里，没有老师，只有一堆学生，默认情况下所有学生都是从机，是不能说话的，当有某个学生想说话时，就得跳出来，变成从机，然后指定与其他任何一个学生进行通信，通信完成后再坐下，变为从机，当有多个学生同时跳出来时，就是总线冲突状态，这时就要进行总线仲裁，仲裁失败的一方让出总线控制权，那这种所有设备一视同仁，谁要做主机谁就跳出来的模型，就是可变多主机。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734683829040-46f9e3d2-b4ca-4f72-9269-197b9a9fa05b.png)
+
+
+
+_**对于我们Stm32的I2C而言，它使用的是可变的多主机模型**__，虽然我们只需要一主多从，没人跟STM32去争夺主机的位置，但是Stm32是按照可变多主机的模型设计的。所以我们还是按照谁要做主机谁就跳出来的思路来操作。_
+
+
+
+下面开始写代码，接线图和前面软件I2C的接线图是一样的，
+
+但是软件I2C的两个通信引脚是可以随意指定的，硬件I2C的通信引脚是不可以任意指定的，我们需要查询引脚定义表来进行引脚规划，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734684249287-04c31ed6-1d96-414c-95aa-7d0647b0b37b.png)
+
+可以看到如果使用硬件的**I2C1，需要接在PB6和PB7**![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734684325592-5b113549-7f04-45c5-9570-6d23b00b02a9.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734684363952-e71ac67a-411c-449d-97e4-806e99a55a11.png)但是在我们这个面板板上PB6，PB7, PB8, PB9都被OLED屏幕占用覆盖了，不太方便接线，
+
+所以继续查表，可以看到这里的**I2C2，引脚是PB10和PB11**，
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734684532511-faa88d61-cae4-42d8-a823-c22b25dd3721.png)
+
+然后重映射没有找到I2C2的重映射。
+
+复制一下软件I2C的工程，重命名打开，在硬件I2C工程里，我们最终的应用层也就是主函数的程序现象都是一样的，区别在于通信的底层，也就是我们之前这里写的MyI2C.c文件，这里面都是用程序手动翻转引脚，也就是软件I2C，那我们有了硬件，这些底层的东西，就可以交给硬件来完成。所以我们这个工程就不再需要这个MyI2C的模块了，直接将它移除工程。
+
+接下来我们需要用硬件I2C的外设来替换下面这些注释的代码，实现相同的功能，
+
+然后下面这里，由于我们只替换最底层的通信层，所以后面这些基于通信层的芯片配置和读取数据的逻辑都不需要更改，那看一下注释的这些代码，
+
+```plain
+#include "stm32f10x.h"                  // Device header
+#include "MPU6050_Reg.h"
+
+#define MPU6050_ADDRESS		0xD0		//MPU6050的I2C从机地址
+
+/**
+  * 函    数：MPU6050写寄存器
+  * 参    数：RegAddress 寄存器地址，范围：参考MPU6050手册的寄存器描述
+  * 参    数：Data 要写入寄存器的数据，范围：0x00~0xFF
+  * 返 回 值：无
+  */
+void MPU6050_WriteReg(uint8_t RegAddress, uint8_t Data)
+{
+//	MyI2C_Start();						//I2C起始
+//	MyI2C_SendByte(MPU6050_ADDRESS);	//发送从机地址，读写位为0，表示即将写入
+//	MyI2C_ReceiveAck();					//接收应答
+//	MyI2C_SendByte(RegAddress);			//发送寄存器地址
+//	MyI2C_ReceiveAck();					//接收应答
+//	MyI2C_SendByte(Data);				//发送要写入寄存器的数据
+//	MyI2C_ReceiveAck();					//接收应答
+//	MyI2C_Stop();						//I2C终止
+}
+
+/**
+  * 函    数：MPU6050读寄存器
+  * 参    数：RegAddress 寄存器地址，范围：参考MPU6050手册的寄存器描述
+  * 返 回 值：读取寄存器的数据，范围：0x00~0xFF
+  */
+uint8_t MPU6050_ReadReg(uint8_t RegAddress)
+{
+	uint8_t Data;
+	
+//	MyI2C_Start();						//I2C起始
+//	MyI2C_SendByte(MPU6050_ADDRESS);	//发送从机地址，读写位为0，表示即将写入
+//	MyI2C_ReceiveAck();					//接收应答
+//	MyI2C_SendByte(RegAddress);			//发送寄存器地址
+//	MyI2C_ReceiveAck();					//接收应答
+//	
+//	MyI2C_Start();						//I2C重复起始
+//	MyI2C_SendByte(MPU6050_ADDRESS | 0x01);	//发送从机地址，读写位为1，表示即将读取
+//	MyI2C_ReceiveAck();					//接收应答
+//	Data = MyI2C_ReceiveByte();			//接收指定寄存器的数据
+//	MyI2C_SendAck(1);					//发送应答，给从机非应答，终止从机的数据输出
+//	MyI2C_Stop();						//I2C终止
+	
+	return Data;
+}
+
+/**
+  * 函    数：MPU6050初始化
+  * 参    数：无
+  * 返 回 值：无
+  */
+void MPU6050_Init(void)
+{
+//	MyI2C_Init();									//先初始化底层的I2C
+	
+	/*MPU6050寄存器初始化，需要对照MPU6050手册的寄存器描述配置，此处仅配置了部分重要的寄存器*/
+	MPU6050_WriteReg(MPU6050_PWR_MGMT_1, 0x01);		//电源管理寄存器1，取消睡眠模式，选择时钟源为X轴陀螺仪
+	MPU6050_WriteReg(MPU6050_PWR_MGMT_2, 0x00);		//电源管理寄存器2，保持默认值0，所有轴均不待机
+	MPU6050_WriteReg(MPU6050_SMPLRT_DIV, 0x09);		//采样率分频寄存器，配置采样率
+	MPU6050_WriteReg(MPU6050_CONFIG, 0x06);			//配置寄存器，配置DLPF
+	MPU6050_WriteReg(MPU6050_GYRO_CONFIG, 0x18);	//陀螺仪配置寄存器，选择满量程为±2000°/s
+	MPU6050_WriteReg(MPU6050_ACCEL_CONFIG, 0x18);	//加速度计配置寄存器，选择满量程为±16g
+}
+
+
+/**
+  * 函    数：MPU6050获取ID号
+  * 参    数：无
+  * 返 回 值：MPU6050的ID号
+  */
+uint8_t MPU6050_GetID(void)
+{
+	return MPU6050_ReadReg(MPU6050_WHO_AM_I);		//返回WHO_AM_I寄存器的值
+}
+
+/**
+  * 函    数：MPU6050获取数据
+  * 参    数：AccX AccY AccZ 加速度计X、Y、Z轴的数据，使用输出参数的形式返回，范围：-32768~32767
+  * 参    数：GyroX GyroY GyroZ 陀螺仪X、Y、Z轴的数据，使用输出参数的形式返回，范围：-32768~32767
+  * 返 回 值：无
+  */
+void MPU6050_GetData(int16_t *AccX, int16_t *AccY, int16_t *AccZ, 
+						int16_t *GyroX, int16_t *GyroY, int16_t *GyroZ)
+{
+	uint8_t DataH, DataL;								//定义数据高8位和低8位的变量
+	
+	DataH = MPU6050_ReadReg(MPU6050_ACCEL_XOUT_H);		//读取加速度计X轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_ACCEL_XOUT_L);		//读取加速度计X轴的低8位数据
+	*AccX = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_ACCEL_YOUT_H);		//读取加速度计Y轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_ACCEL_YOUT_L);		//读取加速度计Y轴的低8位数据
+	*AccY = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_ACCEL_ZOUT_H);		//读取加速度计Z轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_ACCEL_ZOUT_L);		//读取加速度计Z轴的低8位数据
+	*AccZ = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_GYRO_XOUT_H);		//读取陀螺仪X轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_GYRO_XOUT_L);		//读取陀螺仪X轴的低8位数据
+	*GyroX = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_GYRO_YOUT_H);		//读取陀螺仪Y轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_GYRO_YOUT_L);		//读取陀螺仪Y轴的低8位数据
+	*GyroY = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+	
+	DataH = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_H);		//读取陀螺仪Z轴的高8位数据
+	DataL = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_L);		//读取陀螺仪Z轴的低8位数据
+	*GyroZ = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
+}
+
+```
+
+_第一步，配置I2C外设，对I2C2外设进行初始化，来替换这里的MyI2C_Init,_
+
+_第二步，控制外设电路，实现指定地址写的时序，来替换这里的MPU6050_WriteReg，_
+
+_第三步，控制外设电路，实现指定地址读的时序，来替换这里的MPU6050_ReadReg。_
+
+
+
+**配置I2C外设参考下面这两张图， 硬件电路的框图，**![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734686245088-3e45470c-bb54-4c0f-bea8-473a91a59e5a.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734686192938-efd879ce-a881-4453-abd6-33134732ff2a.png)
+
+第一步，开启I2C外设和对应GPIO口的时钟，
+
+第二步，把I2C外设对应的GPIO口初始化为复用开漏模式，
+
+第三步，使用结构体，对整个I2C进行配置，
+
+第四步，I2C_Cmd，使能I2C,
+
+这样初始化配置就完成了。
+
+打开库文件I2c.h，查看I2C的库函数，
+
+```plain
+void I2C_DeInit(I2C_TypeDef* I2Cx);
+void I2C_Init(I2C_TypeDef* I2Cx, I2C_InitTypeDef* I2C_InitStruct);
+void I2C_StructInit(I2C_InitTypeDef* I2C_InitStruct);
+void I2C_Cmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_DMACmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_DMALastTransferCmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_GenerateSTART(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_GenerateSTOP(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_AcknowledgeConfig(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_OwnAddress2Config(I2C_TypeDef* I2Cx, uint8_t Address);
+void I2C_DualAddressCmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_GeneralCallCmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_ITConfig(I2C_TypeDef* I2Cx, uint16_t I2C_IT, FunctionalState NewState);
+void I2C_SendData(I2C_TypeDef* I2Cx, uint8_t Data);
+uint8_t I2C_ReceiveData(I2C_TypeDef* I2Cx);
+void I2C_Send7bitAddress(I2C_TypeDef* I2Cx, uint8_t Address, uint8_t I2C_Direction);
+uint16_t I2C_ReadRegister(I2C_TypeDef* I2Cx, uint8_t I2C_Register);
+void I2C_SoftwareResetCmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_NACKPositionConfig(I2C_TypeDef* I2Cx, uint16_t I2C_NACKPosition);
+void I2C_SMBusAlertConfig(I2C_TypeDef* I2Cx, uint16_t I2C_SMBusAlert);
+void I2C_TransmitPEC(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_PECPositionConfig(I2C_TypeDef* I2Cx, uint16_t I2C_PECPosition);
+void I2C_CalculatePEC(I2C_TypeDef* I2Cx, FunctionalState NewState);
+uint8_t I2C_GetPEC(I2C_TypeDef* I2Cx);
+void I2C_ARPCmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_StretchClockCmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void I2C_FastModeDutyCycleConfig(I2C_TypeDef* I2Cx, uint16_t I2C_DutyCycle);
+```
+
+```plain
+	/*开启时钟*/
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);		//开启I2C2的时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		//开启GPIOB的时钟
+	
+	/*GPIO初始化*/
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);					//将PB10和PB11引脚初始化为复用开漏输出
+	
+	/*I2C初始化*/
+	I2C_InitTypeDef I2C_InitStructure;						//定义结构体变量
+	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;				//模式，选择为I2C模式
+	I2C_InitStructure.I2C_ClockSpeed = 50000;				//时钟速度，选择为50KHz
+	I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;		//时钟占空比，选择Tlow/Thigh = 2
+	I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;				//应答，选择使能
+	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;	//应答地址，选择7位，从机模式下才有效
+	I2C_InitStructure.I2C_OwnAddress1 = 0x00;				//自身地址，从机模式下才有效
+	I2C_Init(I2C2, &I2C_InitStructure);						//将结构体变量交给I2C_Init，配置I2C2
+	
+	/*I2C使能*/
+	I2C_Cmd(I2C2, ENABLE);									//使能I2C2，开始运行
+```
+
+注意I2C1和I2C2都是APB1的外设
+
+
+
+**实现读写时序，参考下面这两张图，主机发送和主机接收的流程图，这样就行了，**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734686112102-6fcfe1e9-d540-480d-bb84-dc5660aa1883.png)![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734686124106-2b8d9694-e831-4b19-b2f1-52544b0d2a68.png)
+
+```plain
+	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成起始条件
+	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT) != SUCCESS);
+	
+	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Transmitter);	//硬件I2C发送从机地址，方向为发送
+	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) != SUCCESS);
+	
+	I2C_SendData(I2C2, RegAddress);											//硬件I2C发送寄存器地址
+	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTING) != SUCCESS);
+	
+	I2C_SendData(I2C2, Data);												//硬件I2C发送数据
+	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED) != SUCCESS);
+	
+	I2C_GenerateSTOP(I2C2, ENABLE);											//硬件I2C生成终止条件
+```
+
+```plain
+	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成起始条件
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT);					//等待EV5
+	
+	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Transmitter);	//硬件I2C发送从机地址，方向为发送
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED);	//等待EV6
+	
+	I2C_SendData(I2C2, RegAddress);											//硬件I2C发送寄存器地址
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED);				//等待EV8_2
+	
+	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成重复起始条件
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT);					//等待EV5
+	
+	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Receiver);		//硬件I2C发送从机地址，方向为接收
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED);		//等待EV6
+	
+	I2C_AcknowledgeConfig(I2C2, DISABLE);									//在接收最后一个字节之前提前将应答失能
+	I2C_GenerateSTOP(I2C2, ENABLE);											//在接收最后一个字节之前提前申请停止条件
+	
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_RECEIVED);				//等待EV7
+	Data = I2C_ReceiveData(I2C2);											//接收数据寄存器
+	
+	I2C_AcknowledgeConfig(I2C2, ENABLE);									//将应答恢复为使能，为了不影响后续可能产生的读取多字节操作
+```
+
+![](https://cdn.nlark.com/yuque/0/2024/png/39216292/1734693596856-d7f35ada-6196-4e51-95d8-f3c189d471cf.png)
+
+程序现象和软件I2C效果一样。
+
+
+
+可以看到WriteReg中出现大量while死循环等待，这种大量死循环等待在程序中是比较危险的，一旦有一个事件一直没有产生，整个事件就会卡死，所以这种死循环等待，我们可以给它加一个**超时退出机制**，这里使用一个简单的计数等待就可以了，
+
+```plain
+/**
+  * 函    数：MPU6050等待事件
+  * 参    数：同I2C_CheckEvent
+  * 返 回 值：无
+  */
+void MPU6050_WaitEvent(I2C_TypeDef* I2Cx, uint32_t I2C_EVENT)
+{
+	uint32_t Timeout;
+	Timeout = 10000;									//给定超时计数时间
+	while (I2C_CheckEvent(I2Cx, I2C_EVENT) != SUCCESS)	//循环等待指定事件
+	{
+		Timeout --;										//等待时，计数值自减
+		if (Timeout == 0)								//自减到0后，等待超时
+		{
+			/*超时的错误处理代码，可以添加到此处*/
+			break;										//跳出等待，不等了
+		}
+	}
+}
+```
+
+```plain
+	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成起始条件
+//	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT) != SUCCESS);
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT);					//等待EV5
+	
+	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Transmitter);	//硬件I2C发送从机地址，方向为发送
+//	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) != SUCCESS);
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED);	//等待EV6
+	
+	I2C_SendData(I2C2, RegAddress);											//硬件I2C发送寄存器地址
+//	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTING) != SUCCESS);
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTING);			//等待EV8
+	
+	I2C_SendData(I2C2, Data);												//硬件I2C发送数据
+//	while (I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED) != SUCCESS);
+	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED);				//等待EV8_2
+	
+	I2C_GenerateSTOP(I2C2, ENABLE);											//硬件I2C生成终止条件
+```
+
+修改后程序现象与前面一样。
+
+
+
+## SPI通信
 
 
 
@@ -2443,6 +3575,16 @@ I2C可以利用这个电路特性，执行多主机模式下的时钟同步和�
 
 
 
+
+## W25Q64
+
+
+### 软件SPI读取
+
+
+
+
+### 硬件SPI读取
 
 
 
@@ -2461,7 +3603,7 @@ I2C可以利用这个电路特性，执行多主机模式下的时钟同步和�
 
 
 ## LED点灯
-
+. . .  . . .
 
 ## OLED显示屏
 [【强烈推荐】基于stm32的OLED各种显示实现（含动态图）_stm32oled以十六进制显示-CSDN博客](https://blog.csdn.net/black_sneak/article/details/125418537)
