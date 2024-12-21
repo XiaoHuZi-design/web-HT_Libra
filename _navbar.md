@@ -2,12 +2,19 @@
 
 * 🤖AI聚合
   * [🔥ChatGPT](https://chatgpt.com/)
+  * [🔥Cursor](https://www.cursor.com/)
+  * [🔥Windsurf](https://codeium.com/)
   * [🔥V0.dev](https://v0.dev/)
   * [🔥通义千问](https://tongyi.aliyun.com/qianwen/)
   * [百度文心一言](https://yiyan.baidu.com/)
   * [智谱清言](https://chatglm.cn/)
   * [Kimi](https://kimi.moonshot.cn/)
   * [豆包](https://www.doubao.com/chat/)
+  * [讯飞语音开放平台](https://www.lingyiwanwu.com/)
+  * [零一万物大模型开放平台](https://platform.lingyiwanwu.com/playground)
+  * [百度千帆大模型开放平台](https://cloud.baidu.com/)
+  * [阿里云千问大模型开放平台](https://www.aliyun.com/)
+  * [智谱大模型开放平台](https://open.bigmodel.cn/)
 
 
 
@@ -26,14 +33,25 @@
 
 * 📚文档查询
   * [Docsify](https://docsify.js.org/#/zh-cn/)
+  * [YOLO官方文档](https://docs.ultralytics.com/zh)
+  * [pytorch官方文档](https://pytorch.org/)
+  * [动手深度学习](https://zh-v2.d2l.ai/chapter_preface/index.html)
+  * [ROS官方文档](https://docs.ros.org/)
   * [赵虚左ROS1文档](http://www.autolabor.com.cn/book/ROSTutorials/)
   * [ROS2鱼香](https://fishros.com/)
   * [STM32野火](http://products.embedfire.com)
+  * [Hello算法](https://www.hello-algo.com/)
   * [城市租房生存指南](https://zufang.ababtools.com/)
+  * [rdk_doc](https://developer.d-robotics.cc/rdk_doc/Quick_start)
+  * [语雀](https://www.yuque.com/dashboard/books)
+  * [飞书](https://kcnge36u6iwd.feishu.cn/drive/home/)
+  * [Gitbook](https://www.gitbook.com/)
+  * [全栈试入门指南](https://maindraster.github.io/)
+  
 
 
 * 👨‍🎓科研神器
-  * [devv.ai](https://devv.ai/zh)
+  * [🔥devv.ai](https://devv.ai/zh)
   * [秘塔写作猫](https://metaso.cn/)
   * [paperdigest](https://www.paperdigest.org/)
   * [武科大图书馆](https://tsg.wust.edu.cn/)
@@ -48,7 +66,16 @@
   * [彩云小译](https://fanyi.caiyunapp.com/)
   * [GPT学术优化](https://academic.chatwithpaper.org/)
 
-
+* ❤️实用小工具
+  * [🔥drawio](https://www.drawio.com/)
+  * [🔥cobalt](https://cobalt.tools/)
+  * [koodo阅读器](https://koodo.960960.xyz/zh)
+  * [bitdock](http://www.bitdock.cn/)
+  * [quicker](https://getquicker.net/)
+  * [shoteasy](https://shoteasy.fun/)
+  * [ilovepdf](https://www.ilovepdf.com/zh-cn)
+  * [netron](https://netron.app/)
+  * [projector](https://projector.tensorflow.org/)
 
 
 
@@ -61,10 +88,29 @@
   * [厂长资源影视](https://www.czzyvideo.com/)
   * [有声听书](https://www.ysts.cc/)
   * [在线音乐](https://listen1.github.io/listen1/)
-  * [电子阅读器](https://koodo.960960.xyz/zh)
   * [白噪音生成器](https://www.whitenoisegenerator.top/)
   * [yandex搜索引擎](https://yandex.com/)
   * [luxirty搜索引擎](https://search.luxirty.com/)
+  * [cursor教程](https://www.bookai.top/cursor/intro)
+  * [cursor教程](https://www.ifb.me/zh/blog/zh/ai/cursorrules-zhong-ji)
 
+* 🍁github好玩项目
+  * [🔥Genesis](https://github.com/Genesis-Embodied-AI/Genesis)
+  * [🔥Phil Wang](https://github.com/lucidrains)
+  * [🔥小王同学在积累](https://github.com/AccumulateMore)
+  * [MoYu](https://github.com/SundayRX/MoYu)
+  * [ToastFish](https://github.com/Uahh/ToastFish)
+  * [scrcpy](https://github.com/Genymobile/scrcpy)
+  * [QtScrcpy](https://github.com/barry-ran/QtScrcpy)
+  * [thefuck](https://github.com/nvbn/thefuck)
+  * [KeymouseGo](https://github.com/taojy123/KeymouseGo)
+  * [moemail](https://github.com/beilunyang/moemail)
+  * [anylabeling](https://github.com/vietanhdev/anylabeling)
+  * [X-AnyLabeling](https://github.com/CVHub520/X-AnyLabeling)
+  * [programming-books](https://github.com/justjavac/free-programming-books-zh_CN)
+  * [system-design-primer](https://github.com/donnemartin/system-design-primer) 
+  * [d2l-ai](https://github.com/d2l-ai/d2l-zh)
+  * [faster-rcnn](https://github.com/bubbliiiing/faster-rcnn-pytorch)
+  
 
 
