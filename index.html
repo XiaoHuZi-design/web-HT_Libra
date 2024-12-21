@@ -1,29 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- 页面头部信息 -->
     <meta charset="UTF-8">
     <title>HT_RearchDocument</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="description" content="Description">
-    <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <!-- 设置浏览器图标 -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css">
-    
-    <!-- 默认主题 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
-    <!-- 主题可选-->
-    <!--
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/buble.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/dark.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/pure.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/dolphin.css"> -->
-
-    <style type="text/css">
+    
+    <style>
         .markdown-section pre[data-lang] {
             overflow: auto !important;
         }
@@ -34,36 +22,33 @@
     
         .line-numbers .line-numbers-rows {
             border-right : 0px solid white;
-            /* Fix paddings to align with code. */
-            padding: 5px; /* Same as code block */
+            padding: 5px;
         }
         
         .markdown-section pre > code {
             padding: 5px;
         }
-    </style>
 
-    <style>
         .code-container {
             display: flex;
-            background: rgba(240, 240, 240, 0.8); /* 设置背景色 */
-            border-radius: 5px; /* 圆角 */
-            margin-bottom: 1em; /* 底部间距 */
-            padding: 10px; /* 内边距 */
+            background: rgba(240, 240, 240, 0.8);
+            border-radius: 5px;
+            margin-bottom: 1em;
+            padding: 10px;
         }
 
         .line-numbers {
-            width: 40px; /* 行号区域的宽度 */
-            padding: 0; /* 行号内边距 */
-            user-select: auto; /* 禁用选择行号 */
-            text-align: left; /* 右对齐行号 */
-            color: #888; /* 行号颜色 */
-            background: transparent; /* 背景透明 */
-            margin-right: 10px; /* 右边距以分隔行号和代码 */
+            width: 40px;
+            padding: 0;
+            user-select: none;
+            text-align: right;
+            color: #888;
+            background: transparent;
+            margin-right: 10px;
         }
 
         .line-number {
-            display: block; /* 行号独占一行 */
+            display: block;
         }
 
         pre {
@@ -80,10 +65,13 @@
         }
     </style>
 
-</head>
+    <!-- Gitalk CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
 
+</head>
 <body>
     <div id="app">Loading...</div>
+    <div id="gitalk-container"></div>
 
     <script>
         window.$docsify = {
@@ -110,9 +98,7 @@
                         </button>
                     `,
                     data() {
-                        return {
-                            count: 0,
-                        };
+                        return { count: 0 };
                     },
                 },
             },
@@ -153,7 +139,7 @@
             markdown: {
                 renderer: {
                     code: function(code, lang) {
-                        return '<pre data-lang="' + lang + '"><code class="line-numbers language-' + lang + '">' + code + '</code></pre>';
+                        return `<pre data-lang="${lang}"><code class="line-numbers language-${lang}">${code}</code></pre>`;
                     }
                 }
             },
@@ -162,29 +148,24 @@
                     hook.doneEach(function(html) {
                         Prism.highlightAll();
                     });
+                },
+                function(hook, vm) {
+                    hook.beforeEach(function(html) {
+                        var url = 'https://github.com/XiaoHuZi-design/web-HT_Libra/tree/main' + vm.route.file;
+                        var editHtml = `[📝 EDIT DOCUMENT](${url})\n`;
+                        return editHtml + html + '\n----\nLast modified {docsify-updated} ' + editHtml;
+                    });
                 }
             ],
             toc: {
                 tocMaxLevel: 2,
                 target: "h2, h3, h4, h5, h6",
-            },
-            plugins: [
-                function(hook, vm) {
-                    hook.beforeEach(function(html) {
-                        var url = 'https://github.com/XiaoHuZi-design/web-HT_Libra/tree/main' + vm.route.file;
-                        var editHtml = '[📝 EDIT DOCUMENT](' + url + ')\n';
-                        return editHtml + html + '\n----\n' + 'Last modified {docsify-updated} ' + editHtml;
-                    });
-                }
-            ],
+            }
         };
     </script>
 
     <!-- 加载必要的脚本 -->
-    <script src="highlight-line.js"></script>
-    <script src="read-num.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
-    <script src="document_encryption.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
@@ -207,24 +188,37 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
 
 
+     <!--评论系统-->
+     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+     <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
+     <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+     <script>
+     const gitalk = new Gitalk({
+         id: decodeURI('{{ page.url }}'),
+         clientID: 'Ov23ctkR3x4dcec6C8kY',
+         clientSecret: '7531a15e87dcba97e0b234d9b140f46b23dd67ec',
+         repo: 'discuss_gitalk',
+         owner: 'XiaoHuZi-design',
+         admin: ['XiaoHuZi-design'],
+         //title: 'ht',
+         distractionFreeMode: false
+     })
+     </script> 
 
-    <!--评论系统-->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <!-- 引入并初始化看板娘功能 -->
     <script>
-    const gitalk = new Gitalk({
-        id: decodeURI('{{ page.url }}'),
-        clientID: 'Ov23ctkR3x4dcec6C8kY',
-        clientSecret: '7531a15e87dcba97e0b234d9b140f46b23dd67ec',
-        repo: 'discuss_gitalk',
-        owner: 'XiaoHuZi-design',
-        admin: ['XiaoHuZi-design'],
-        //title: 'ht',
-        distractionFreeMode: false
-    })
-    </script> 
-
-
+        document.addEventListener('DOMContentLoaded', function() {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/IlysvlVEizbr/Live2D@1.9/kbn.js';
+            script.onload = function() {
+                if (typeof window.waifuRun === 'function') {
+                    window.waifuRun();
+                } else {
+                    console.error('Live2D waifuRun function not found.');
+                }
+            };
+            document.body.appendChild(script);
+        });
+    </script>
 </body>
 </html>
