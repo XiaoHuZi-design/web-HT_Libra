@@ -41,7 +41,7 @@
 
 - [十大经典排序算法（C++实现） - fengMisaka - 博客园 (cnblogs.com)](https://www.cnblogs.com/linuxAndMcu/p/10201215.html)
 - [排序算法 —— 希尔排序（图文超详细）-CSDN博客](https://blog.csdn.net/m0_63033419/article/details/127524644)
-- 更多精彩内容，请浏览 [文章列表](./articles)
+- 更多精彩内容，请浏览 [文章列表](./articles_list.md)
 
 ## 联系我们
 
