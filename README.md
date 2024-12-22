@@ -67,22 +67,6 @@ Ciao!
 
 <!-- tabs:end -->
 
-<script src="//platform-api.sharethis.com/js/sharethis.js"></script>
-<div class="sharethis-inline-share-buttons"></div>
-
-<div id="gitalk-container"></div>
-<script>
-    const gitalk = new Gitalk({
-        clientID: 'your-client-id',
-        clientSecret: 'your-client-secret',
-        repo: 'your-repo',
-        owner: 'your-username',
-        admin: ['your-username'],
-        distractionFreeMode: false
-    });
-    gitalk.render('gitalk-container');
-</script>
-
 <form action="https://your-email-service-url" method="POST">
     <input type="email" name="EMAIL" placeholder="输入您的邮箱..." required>
     <button type="submit">订阅</button>

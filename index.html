@@ -187,7 +187,7 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
 
-    
+
     <!--代码行号显示与阅读量统计-->
     <script src="highlight-line.js"></script>
     <script src="read-num.js"></script>
@@ -202,8 +202,9 @@
     <script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
     <div id="gitalk-container"></div>
     <script>
-        window.onload = function() {
+        window.onload = function() {  //确保 Gitalk 在页面完全加载后初始化
             const gitalk = new Gitalk({
+                //id: decodeURI('{{ page.url }}'),
                 id: location.pathname, // 使用当前页面路径作为唯一标识符
                 clientID: 'Ov23ctkR3x4dcec6C8kY',
                 clientSecret: '7531a15e87dcba97e0b234d9b140f46b23dd67ec',
