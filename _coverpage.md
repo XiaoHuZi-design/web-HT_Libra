@@ -7,14 +7,24 @@
 
 # HT的研究生指南 
 
-> 💪采用Docsify与Typora所设计的轻量化日常科研记录，研究方向：深度学习、图像处理、机器人、机器视觉、单片机、人工智能以及大模型训练。
+> 💪采用Docsify与Typora所设计的轻量化日常科研记录，研究方向：深度学习、图像处理、机器人、机器视觉、单片机、具身智能。
 
 便携化办公、学习  
 - ROS RVIZ GAZEBO RQT TF  
 - STM32 YOLO TRANSFORM DEEPLEARNING IMAGEPROCESSING
 
-[GitHub](https://github.com/XiaoHuZi-design)  
-[求学之路 Let Go](/README.md)
+<!-- [🍑GitHub](https://github.com/XiaoHuZi-design)  
+[🍑求学之路 Let Go](/README.md) -->
+
+<div style="display: inline-block;">
+    <a href="https://github.com/XiaoHuZi-design">
+        <button>🍑GitHub</button>
+    </a>
+    <a href="#/README.md">  
+    <!-- 加个#号，不然跳转后是文档     -->
+        <button>🍑求学之路 Let Go</button>
+    </a>
+</div>
 
 ---
 

@@ -65,9 +65,6 @@
         }
     </style>
 
-    <!-- Gitalk CSS -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
-
 </head>
 <body>
     <div id="app">Loading...</div>
@@ -75,21 +72,49 @@
 
     <script>
         window.$docsify = {
+            // 项目名称
             name: 'DocsifyMaster',
+            // 仓库地址，点击右上角的Github章鱼猫头像会跳转到此地址
             repo: 'https://github.com/XiaoHuZi-design?tab=repositories',
+            // 侧边栏支持，默认加载的是项目根目录下的_sidebar.md文件
             loadSidebar: true,
             autoHeader: true,
+            // 导航栏支持，默认加载的是项目根目录下的_navbar.md文件
             loadNavbar: true,
+            // 封面支持，默认加载的是项目根目录下的_coverpage.md文件
             coverpage: true,
+            // 最大支持渲染的标题层级
             maxLevel: 5,
+            // 自定义侧边栏后默认不会再生成目录，设置生成目录的最大层级（建议配置为2-4）
             subMaxLevel: 4,
+            // 小屏设备下合并导航栏到侧边栏
             mergeNavbar: true,
+            // 切换页面后是否自动跳转到页面顶部
             auto2top: true,
+            // 启用相对路径
             relativePath: true,
+            // 加载侧边栏中出现的网页图标
             logo: '_media/LogosBun.svg',
+
+            //执行文档里的script标签
+            executeScript: true,
+            //禁用 emoji 解析
+            noEmoji:false,
+            //文档变更日期
+            formatUpdated: '{MM}/{DD} {HH}:{mm}',
+            formatUpdated: function(time) {
+              // ...
+
+              return time;
+            }, 
+
+            // 外部链接的打开方式
             externalLinkTarget: '_blank',
+            // 防止新打开的页面能够控制我们的页面
             externalLinkRel: 'noopener',
+            //滚动锚点，可以距离页面顶部有一定的空间
             topMargin: 90,
+            //创建并注册全局 Vue组件 
             vueComponents: {
                 'button-counter': {
                     template: `
