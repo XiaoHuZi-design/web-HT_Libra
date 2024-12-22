@@ -1,8 +1,13 @@
 <!-- _coverpage.md -->
-
 <!-- 背景图片 -->
+<!-- ![](_media/高木同学.jpg) -->
+<!-- 背景色 -->
+<!-- ![color](#f0f0f0) -->
+
+<!-- 封面logo 背景默认就是渐变色 -->
 <div style="background-color: #f0f0f0; display: inline-block; padding: 10px; margin-top: 55px;">
-    <img src="_media/人工智能.png" alt="人工智能" width="300" height="200">
+    <!-- <img src="_media/人工智能.png" alt="人工智能" width="300" height="200"> -->
+    <img src="_media/a4.png" alt="人工智能" width="300" height="200">
 </div>
 
 # HT的研究生指南 
