@@ -18,11 +18,11 @@
 
 <div style="display: inline-block;">
     <a href="https://github.com/XiaoHuZi-design">
-        <button>🍑GitHub</button>
+        <button style="width: 75px; height: 25px; font-size: 12px;">🍑GitHub</button>
     </a>
     <a href="#/README.md">  
     <!-- 加个#号，不然跳转后是文档     -->
-        <button>🍑求学之路 Let Go</button>
+        <button style="width: 120px; height: 25px; font-size: 12px;">🍑求学之路 Let Go</button>
     </a>
 </div>
 
