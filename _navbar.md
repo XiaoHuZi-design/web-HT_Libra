@@ -5,6 +5,7 @@
   * [🔥Cursor](https://www.cursor.com/)
   * [🔥Windsurf](https://codeium.com/)
   * [🔥V0.dev](https://v0.dev/)
+  * [🔥copilot](https://github.com/copilot)
   * [🔥通义千问](https://tongyi.aliyun.com/qianwen/)
   * [百度文心一言](https://yiyan.baidu.com/)
   * [智谱清言](https://chatglm.cn/)
