@@ -40,7 +40,7 @@
 ## 最新文章
 
 - [十大经典排序算法（C++实现） - fengMisaka - 博客园 (cnblogs.com)](https://www.cnblogs.com/linuxAndMcu/p/10201215.html)
-- [排序算法 —— 希尔排序（图文超详细）-CSDN博客](https://blog.csdn.net/m0_63033419/article/details/127524644)
+- [YOLO系列算法精讲：从yolov1至yolov8的进阶之路（2万字超全整理）](https://blog.csdn.net/wjinjie/article/details/107509243)
 - 更多精彩内容，请浏览 [文章列表](./articles_list.md)
 
 ## 联系我们

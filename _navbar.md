@@ -20,6 +20,7 @@
 
 
 * 🚀常用网址
+  * [🔥gallery](https://oss.gallery/)
   * [🔥Github地址](https://github.com/YSGStudyHards)
   * [🔥Bilibili地址](https://www.bilibili.com/)
   * [🔥CSDN](https://www.csdn.net/)
@@ -34,16 +35,21 @@
 
 * 📚文档查询
   * [Docsify](https://docsify.js.org/#/zh-cn/)
-  * [YOLO官方文档](https://docs.ultralytics.com/zh)
-  * [pytorch官方文档](https://pytorch.org/)
-  * [动手深度学习](https://zh-v2.d2l.ai/chapter_preface/index.html)
+  * [genesis官方文档](https://genesis-world.readthedocs.io/en/latest/index.html)
+  * [智能机器人开源文档](https://robot.czxy.com/docs/)
   * [ROS官方文档](https://docs.ros.org/)
   * [赵虚左ROS1文档](http://www.autolabor.com.cn/book/ROSTutorials/)
   * [ROS2鱼香](https://fishros.com/)
   * [STM32野火](http://products.embedfire.com)
+  * [YOLO官方文档](https://docs.ultralytics.com/zh)
+  * [pytorch官方文档](https://pytorch.org/)
+  * [mamba官方文档](https://mamba.readthedocs.io/en/latest/index.html)
+  * [mmcv官方文档](https://mmcv.readthedocs.io/zh-cn/latest/get_started/installation.html)
+  * [动手深度学习](https://zh-v2.d2l.ai/chapter_preface/index.html)
   * [Hello算法](https://www.hello-algo.com/)
   * [城市租房生存指南](https://zufang.ababtools.com/)
   * [rdk_doc](https://developer.d-robotics.cc/rdk_doc/Quick_start)
+  * [yahboom](https://www.yahboom.com/study/Dofbot-Pi#xuanzhon_13)
   * [语雀](https://www.yuque.com/dashboard/books)
   * [飞书](https://kcnge36u6iwd.feishu.cn/drive/home/)
   * [Gitbook](https://www.gitbook.com/)
@@ -99,6 +105,7 @@
   * [🔥Genesis](https://github.com/Genesis-Embodied-AI/Genesis)
   * [🔥Phil Wang](https://github.com/lucidrains)
   * [🔥小王同学在积累](https://github.com/AccumulateMore)
+  * [Ackerman-Car-ROS2](https://github.com/zhaokexue/Ackerman-Car-ROS2)
   * [MoYu](https://github.com/SundayRX/MoYu)
   * [ToastFish](https://github.com/Uahh/ToastFish)
   * [scrcpy](https://github.com/Genymobile/scrcpy)
@@ -111,7 +118,12 @@
   * [programming-books](https://github.com/justjavac/free-programming-books-zh_CN)
   * [system-design-primer](https://github.com/donnemartin/system-design-primer) 
   * [d2l-ai](https://github.com/d2l-ai/d2l-zh)
+  * [ssd.pytorch](https://github.com/amdegroot/ssd.pytorch)
   * [faster-rcnn](https://github.com/bubbliiiing/faster-rcnn-pytorch)
+  * [PlugNPlay](https://github.com/ai-dawang/PlugNPlay-Modules)
+  * [GRCNN](https://github.com/Jianf-Wang/GRCNN)
+  * [robotic-grasping](https://github.com/skumra/robotic-grasping)
+  * [grasp-anything](https://airvlab.github.io/grasp-anything/docs/code/)
   
 
 
