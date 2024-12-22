@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HT_RearchDocument</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Description">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+    
+    <style>
+        .markdown-section pre[data-lang] {
+            overflow: auto !important;
+        }
+        
+        .markdown-section pre[data-lang] code {
+            overflow: visible;
+        }
+
+        .line-numbers .line-numbers-rows {
+            border-right : 0px solid white;
+            padding: 5px;
+        }
+
+        .markdown-section pre > code {
+            padding: 5px;
+        }
+
+        .code-container {
+            display: flex;
+            background: rgba(240, 240, 240, 0.8);
+            border-radius: 5px;
+            margin-bottom: 1em;
+            padding: 10px;
+        }
+
+        .line-numbers {
+            width: 40px;
+            padding: 0;
+            user-select: none;
+            text-align: right;
+            color: #888;
+            background: transparent;
+            margin-right: 10px;
+        }
+
+        .line-number {
+            display: block;
+        }
+
+        pre {
+            margin: 0;
+            overflow: auto;
+            flex-grow: 1;
+            padding: 0 10px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: monospace;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        /* 新增的样式 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .animate-spin-slow {
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Gitalk CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+
+</head>
+<body>
+    <div id="app">Loading...</div>
+    <div id="gitalk-container"></div>
+
+    <header>
+        <h1>Postgraduate study and research career project documents</h1>
+        <button-counter></button-counter>
+        <p>
+          <button @click="count -= 1">-</button>
+          {{ count }}
+          <button @click="count += 1">+</button>
+        </p>
+
+        <div id="counter">
+          <button @click="count -= 1">-</button>
+          {{ count }}
+          <button @click="count += 1">+</button>
+        </div>
+
+        <!-- tabs:start -->
+        <div class="tabs">
+          <div class="tab">English</div>
+          <div class="tab">中文</div>
+          <div class="tab">Python</div>
+          <div class="tab">Data</div>
+          <div class="tab">Science</div>
+          <div class="tab">Goals</div>
+        </div>
+        <!-- tabs:end -->
+    </header>
+
+    <!-- 机械仔 Libra 的部分 -->
+    <div class="min-h-screen flex items-center justify-center p-4 mt-8">
+        <div class="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full space-y-6">
+            <div class="flex items-center justify-center">
+                <div class="bg-blue-500 rounded-full p-3 animate-spin-slow">
+                    <svg class="w-12 h-12 text-white" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+            </div>
+
+            <h1 class="text-3xl font-bold text-center text-gray-800">机械仔libra</h1>
+
+            <p class="text-center text-gray-600">
+                嗨！我是一个可爱的机械仔。我喜欢音乐、星星和所有美好的事物！
+            </p>
+
+            <div class="flex justify-center space-x-4">
+                <button class="text-red-500 hover:text-red-600 transition">
+                    ❤️
+                </button>
+                <button class="text-yellow-500 hover:text-yellow-600 transition">
+                    ⭐
+                </button>
+                <button class="text-green-500 hover:text-green-600 transition">
+                    🎵
+                </button>
+            </div>
+
+            <div class="bg-pink-100 rounded-2xl p-4">
+                <h2 class="text-xl font-semibold text-pink-800 mb-2">我的爱好</h2>
+                <ul class="list-disc list-inside text-gray-700">
+                    <li>弹吉他</li>
+                    <li>看星星</li>
+                    <li>编程</li>
+                    <li>画画</li>
+                </ul>
+            </div>
+
+            <button id="greet-btn" class="w-full bg-purple-500 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-600 transition duration-300">
+                跟我打个招呼吧！
+            </button>
+
+            <div id="tease" class="mt-4 text-center text-gray-700 font-semibold hidden fade-in">
+                <p>嘿！你点了这么多次，是不是觉得很有趣呀？</p>
+                <p>真是个调皮鬼！</p>
+            </div>
+
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="https://instagram.com/yourprofile" target="_blank" class="text-purple-500 hover:text-purple-600 transition">
+                    <svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.16-11.75c.15 0 .31-.02.46-.05.47-.11.85-.5.94-.97s-.2-.91-.64-1.01c-.19-.04-.37-.06-.56-.06-.63 0-1.16.5-1.16 1.13s.5 1.13 1.16 1.13zM12 5.58c2.02 0 3.67 1.65 3.67 3.68s-1.65 3.67-3.67 3.67-3.67-1.65-3.67-3.67S9.98 5.58 12 5.58z"></path></svg>
+                </a>
+                <a href="https://twitter.com/yourprofile" target="_blank" class="text-purple-500 hover:text-purple-600 transition">
+                    <svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><path d="M22.46 6c-.77.35-1.59.59-2.46.69-.86-.91-2.09-1.5-3.49-1.5-3.79 0-6.86 3.12-6.86 6.96 0 .54.06 1.06.18 1.57-4.52-.24-8.5-2.51-11.17-5.99-.46.79-.73 1.7-.73 2.66 0 1.84 1.11 3.43 2.76 4.02-.66-.02-1.28-.2-1.82-.5v.05c0 2.56 1.83 4.71 4.27 5.2-.44.12-.9.19-1.36.19-.33 0-.65-.03-.96-.09.65 1.97 2.49 3.41 4.68 3.45-1.7 1.33-3.83 2.12-6.17 2.12-.4 0-.8-.02-1.19-.07 2.23 1.47 4.89 2.34 7.78 2.34 9.34 0 14.47-7.88 14.47-14.69 0-.22-.01-.44-.02-.66.99-.72 1.85-1.61 2.5-2.62z"></path></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.$docsify = {
+            name: 'DocsifyMaster',
+            repo: 'https://github.com/XiaoHuZi-design?tab=repositories',
+            loadSidebar: true,
+            autoHeader: true,
+            loadNavbar: true,
+            coverpage: true,
+            maxLevel: 5,
+            subMaxLevel: 4,
+            mergeNavbar: true,
+            auto2top: true,
+            relativePath: true,
+            logo: '_media/LogosBun.svg',
+            externalLinkTarget: '_blank',
+            externalLinkRel: 'noopener',
+            topMargin: 90,
+            vueComponents: {
+                'button-counter': {
+                    template: `
+                        <button @click="count += 1">
+                            You clicked me {{ count }} times
+                        </button>
+                    `,
+                    data() {
+                        return { count: 0 };
+                    },
+                },
+            },
+            search: {
+                maxAge: 86400000,
+                paths: 'auto',
+                placeholder: {
+                    '/zh-cn/': '搜索',
+                    '/': 'Type to search'
+                },
+                noData: '找不到结果',
+                depth: 4,
+                hideOtherSidebarContent: false,
+                namespace: 'DocsifyMaster',
+            },
+            pagination: {
+                previousText: '上一章节',
+                nextText: {
+                    '/en/': 'NEXT',
+                    '/': '下一章节',
+                },
+                crossChapter: true,
+                crossChapterText: true,
+            },
+            count: {
+                countable: true,
+                fontsize: '0.9em',
+                color: 'rgb(90,90,90)',
+                language: 'chinese',
+            },
+            tabs: {
+                persist: true,
+                sync: true,
+                theme: 'classic',
+                tabComments: true,
+                tabHeadings: true,
+            },
+            markdown: {
+                renderer: {
+                    code: function(code, lang) {
+                        return `<pre data-lang="${lang}"><code class="line-numbers language-${lang}">${code}</code></pre>`;
+                    }
+                }
+            },
+            plugins: [
+                function(hook, vm) {
+                    hook.doneEach(function(html) {
+                        Prism.highlightAll();
+                    });
+                },
+                function(hook, vm) {
+                    hook.beforeEach(function(html) {
+                        var url = 'https://github.com/XiaoHuZi-design/web-HT_Libra/tree/main' + vm.route.file;
+                        var editHtml = `[📝 EDIT DOCUMENT](${url})\n`;
+                        return editHtml + html + '\n----\nLast modified {docsify-updated} ' + editHtml;
+                    });
+                }
+            ],
+            toc: {
+                tocMaxLevel: 2,
+                target: "h2, h3, h4, h5, h6",
+            }
+        };
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-plugin-toc@1.1.0/dist/docsify-plugin-toc.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/disqus.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+    <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-php.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
+    
+    <script src="highlight-line.js"></script>
+    <script src="read-num.js"></script>
+    <script src="document_encryption.js"></script>
+
+    <script>
+        document.getElementById('greet-btn').onclick = function() {
+            document.getElementById('tease').classList.toggle('hidden');
+        };
+    </script>
+</body>
+</html>
