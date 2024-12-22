@@ -187,6 +187,7 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
 
+    
     <!--代码行号显示与阅读量统计-->
     <script src="highlight-line.js"></script>
     <script src="read-num.js"></script>
@@ -194,22 +195,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script> 
     <script src="document_encryption.js"></script>
 
-     <!--评论系统-->
-     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
-     <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
-     <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
-     <script>
-     const gitalk = new Gitalk({
-         id: decodeURI('{{ page.url }}'),
-         clientID: 'Ov23ctkR3x4dcec6C8kY',
-         clientSecret: '7531a15e87dcba97e0b234d9b140f46b23dd67ec',
-         repo: 'discuss_gitalk',
-         owner: 'XiaoHuZi-design',
-         admin: ['XiaoHuZi-design'],
-         //title: 'ht',
-         distractionFreeMode: false
-     })
-     </script> 
+
+     <!-- 评论系统 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+    <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>
+    <script>
+        window.onload = function() {
+            const gitalk = new Gitalk({
+                id: location.pathname, // 使用当前页面路径作为唯一标识符
+                clientID: 'Ov23ctkR3x4dcec6C8kY',
+                clientSecret: '7531a15e87dcba97e0b234d9b140f46b23dd67ec',
+                repo: 'discuss_gitalk',
+                owner: 'XiaoHuZi-design',
+                admin: ['XiaoHuZi-design'],
+                distractionFreeMode: false
+            });
+            gitalk.render('gitalk-container'); // 渲染 Gitalk
+        };
+    </script>
 
     <!-- 引入并初始化看板娘功能 -->
     <script>
