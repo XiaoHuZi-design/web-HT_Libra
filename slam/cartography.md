@@ -853,6 +853,28 @@ roslaunch cartographer_ros assets_writer_3d.launch
 
 由于前面3d建图rviz打开失败没有成功生成3d-1.pbstream文件，所以这里也用不了。
 
+正常处理完后会生成b3-1.pcd，
+
+可视化3D点云地图，
+
+```bash
+sudo apt-get install pcl-tools
+```
+
+```
+pcl_viewer b3-1.pcd
+```
+
+![image-20241224220041096](assets\临时1.png)
+
+按一下4，会自动按照不同的高度来进行着色，
+
+![image-20241224220146126](assets\临时2.png)
+
+
+
+
+
 
 
 下面看看lua文件怎么设置的，
