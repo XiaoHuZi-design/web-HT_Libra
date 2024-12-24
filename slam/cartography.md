@@ -12,9 +12,13 @@
 wget http://fishros.com/install -O fishros && . fishros
 ```
 
+**链接：**https://pan.baidu.com/s/1q9f5aNTfrbpFpwGCwD6E4A
+
+**提取码：**slam
 
 
-# 安装cartography
+
+# 安装cartographer
 
 系统环境 ubantu18.04
 
@@ -118,7 +122,9 @@ python-rosdep 已经是最新版 (0.23.1-1)。
 
 ```
 
-**不出意外顺利安装！**
+![image-20241224141153933](assets\error.png)
+
+**没有报红，不出意外顺利安装！** 这里出意外了... ...
 
 ![image-20241223212023449](assets\image-20241223212023449.png)
 
@@ -210,6 +216,8 @@ sudo ninja install
 
 
 **下载cartography注释后的源码**
+
+https://github.com/xiangli0608/cartographer_detailed_comments_ws
 
 ```bash
 ht_llibra@ht-llibra:~$ mkdir carto_ws
@@ -331,4 +339,575 @@ Run CMD Task:[sudo chmod -R 777 cartographer_ws]
 ```
 
 
+
+工作空间检查依赖
+
+```bash
+rosdepc init
+rosdepc update
+rosdepc install --from-paths src -y --ignore-src
+```
+
+---
+
+
+
+**找到原因了**，
+
+我整个电脑只有10个内核，虚拟机我设置了8个，然后编译默认用满，所以虚拟机直接崩了。
+
+需要改小点，改成4线程就可以
+
+![image-20241224145312074](assets\修改内核线程.png)
+
+![image-20241224145654757](assets\image-20241224145654757.png)
+
+从源头解决问题，咱用的虚拟机，重新设置一下，
+
+![image-20241224151320970](assets\虚拟机线程设置.png)
+
+---
+
+**编译源码的方式使用carto**
+
+首先在carto_ws下新建工作空间
+
+![image-20241224150332973](assets\image-20241224150332973.png)
+
+然后把cartographer_detailed_comments_ws里的cartographer_ros文件夹复制到src目录，
+
+![image-20241224150450684](assets\image-20241224150450684.png)
+
+在工作空间编译一下，
+
+```bash
+catkin_make
+```
+
+![image-20241224151838035](assets\image-20241224151838035.png)
+
+编译成功。
+
+---
+
+# 运行cartographer
+
+设置全局环境变量，避免每次都source，
+
+```bash
+source ~/carto_ws/cartographer_detailed_comments_ws/install_isolated/setup.bash
+```
+
+下载数据集
+
+![image-20241224152143988](assets\数据集.png)
+
+将三个数据集解压放于下图位置，
+
+![image-20241224153010196](assets\image-20241224153010196.png)
+
+
+
+### **二维建图**
+
+```bash
+source install_isolated/setup.bash
+rospack profile //执行这个是为了避免找不到launch
+roslaunch cartographer_ros lx_rs16_2d_outdoor.launch
+```
+
+![image-20241224153425255](assets\rospack_profile.png)
+
+![image-20241224154635215](assets\数据包1.png)
+
+这里两个红色报错是正常的，不影响，和每个人的电脑配置有关，
+
+![image-20241224185001913](assets\image-20241224185001913.png)
+
+整个地图由这些子图叠加而成。
+
+lx_rs16_2d_outdoor.launch代码：
+
+```xml
+<launch>
+  <!-- bag的地址与名称 -->
+  <arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/>
+
+  <!-- 使用bag的时间戳 -->
+  <param name="/use_sim_time" value="true" />
+
+  <!-- 启动cartographer -->
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_ros)/configuration_files
+          -configuration_basename lx_rs16_2d_outdoor.lua"
+      output="screen">
+    <remap from="points2" to="rslidar_points" />
+    <remap from="scan" to="front_scan" />
+    <remap from="odom" to="odom_scout" />
+    <remap from="imu" to="imu" />
+  </node>
+
+  <!-- 生成ros格式的地图 -->
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
+
+  <!-- 启动rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_ros)/configuration_files/lx_2d.rviz" />
+
+  <!-- 启动rosbag -->
+  <node name="playbag" pkg="rosbag" type="play"
+      args="--clock $(arg bag_filename)" />
+
+</launch>
+```
+
+
+
+**安装vscode开发环境**
+
+```
+ht_llibra@ht-llibra:~/下载$ sudo dpkg -i code_1.96.2-1734607745_amd64.deb
+[sudo] ht_llibra 的密码： 
+正在选中未选择的软件包 code。
+(正在读取数据库 ... 系统当前共安装有 255918 个文件和目录。)
+正准备解包 code_1.96.2-1734607745_amd64.deb  ...
+正在解包 code (1.96.2-1734607745) ...
+dpkg: 依赖关系问题使得 code 的配置工作不能继续：
+ code 依赖于 libc6 (>= 2.28)；然而：
+系统中 libc6:amd64 的版本为 2.27-3ubuntu1.6。
+ code 依赖于 libxkbfile1 (>= 1:1.1.0)；然而：
+系统中 libxkbfile1:amd64 的版本为 1:1.0.9-2。
+
+dpkg: 处理软件包 code (--install)时出错：
+ 依赖关系问题 - 仍未被配置
+正在处理用于 gnome-menus (3.13.3-11ubuntu1.1) 的触发器 ...
+正在处理用于 desktop-file-utils (0.23-1ubuntu3.18.04.2) 的触发器 ...
+正在处理用于 mime-support (3.60ubuntu1) 的触发器 ...
+正在处理用于 shared-mime-info (1.9-2) 的触发器 ...
+在处理时有错误发生：
+ code
+ht_llibra@ht-llibra:~/下载$ 
+```
+
+大概版本太高了。
+
+```bash
+ht_llibra@ht-llibra:~/下载$ sudo dpkg -i code_1.75.1-1675893397_amd64.deb
+[sudo] ht_llibra 的密码： 
+dpkg: 警告: 即将把 code 从 1.86.2-1707854558 降级到 1.75.1-1675893397
+(正在读取数据库 ... 系统当前共安装有 257363 个文件和目录。)
+正准备解包 code_1.75.1-1675893397_amd64.deb  ...
+正在将 code (1.75.1-1675893397) 解包到 (1.86.2-1707854558) 上 ...
+正在设置 code (1.75.1-1675893397) ...
+gpg: WARNING: unsafe ownership on homedir '/home/ht_llibra/.gnupg'
+正在处理用于 gnome-menus (3.13.3-11ubuntu1.1) 的触发器 ...
+正在处理用于 desktop-file-utils (0.23-1ubuntu3.18.04.2) 的触发器 ...
+正在处理用于 mime-support (3.60ubuntu1) 的触发器 ...
+正在处理用于 shared-mime-info (1.9-2) 的触发器 ...
+ht_llibra@ht-llibra:~/下载$ 
+```
+
+![image-20241224172411993](assets\image-20241224172411993.png)
+
+安装成功。
+
+
+
+**建好地图后保存**，
+
+先安装一下地图服务，
+
+```
+sudo apt-get install ros-melodic-map-server
+```
+
+再执行命令，
+
+```
+rosrun map_server map_saver
+```
+
+默认保存在当前目录。
+
+![image-20241224174056993](assets\image-20241224174056993.png)
+
+![image-20241224173938281](assets\数据包1地图.png)
+
+![image-20241224174146899](assets\image-20241224174146899.png)
+
+另一种方法，执行finish_slam_2d.sh脚本，
+
+![image-20241224174355480](assets\image-20241224174355480.png)
+
+```sh
+#!/bin/bash
+
+source install_isolated/setup.bash
+
+map_dir="${HOME}/carto_ws/map"  # 文件保存路径
+map_name="2d-1"   
+
+# 检查文件夹是否存在, 如果不存在就创建文件夹
+if [ ! -d "$map_dir" ];then
+  echo "文件夹不存在, 正在创建文件夹"
+  mkdir -p $map_dir
+fi
+
+
+# finish slam
+rosservice call /finish_trajectory 0
+
+# make pbstream     生成2d-1.pbstream
+rosservice call /write_state "{filename: '$map_dir/$map_name.pbstream'}"
+
+# pbstream to map   生成2d-1.pgm和2d-1.yaml
+rosrun cartographer_ros cartographer_pbstream_to_ros_map \
+-pbstream_filename=$map_dir/$map_name.pbstream \
+-map_filestem=$map_dir/$map_name
+```
+
+![image-20241224175102107](assets\image-20241224175102107.png)
+
+![image-20241224175155202](assets\image-20241224175155202.png)
+
+![image-20241224184414614](assets\image-20241224184414614.png)
+
+
+
+### **纯定位模式**
+
+```bash
+ roslaunch cartographer_ros lx_rs16_2d_outdoor_localization.launch 
+```
+
+![image-20241224190410622](assets\纯定位模式.png)
+
+这时候已经有了第一次建图的一个轨迹和地图
+
+lx_rs16_2d_outdoor_localization.launch文件：
+
+```xml
+<launch>
+  <!-- bag的地址与名称 -->
+  <arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/>
+  <!-- pbstream的地址与名称 -->
+  <arg name="load_state_filename" default="$(env HOME)/carto_ws/map/2d-1.pbstream"/>
+
+  <!-- 使用bag的时间戳 -->
+  <param name="/use_sim_time" value="true" />
+
+  <!-- 启动cartographer -->
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_ros)/configuration_files
+          -configuration_basename lx_rs16_2d_outdoor_localization.lua
+          -load_state_filename $(arg load_state_filename)"
+      output="screen">
+    <remap from="points2" to="rslidar_points" />
+    <remap from="scan" to="front_scan" />
+    <remap from="odom" to="odom_scout" />
+    <remap from="imu" to="imu" />
+  </node>
+
+  <!-- 启动map_server -->
+  <!-- 
+  <node name="map_server" pkg="map_server" type="map_server"
+      args="$(env HOME)/carto_ws/map/2d-1.yaml" /> 
+  -->
+
+  <!-- 启动rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+
+  <!-- 启动rosbag -->
+  <node name="playbag" pkg="rosbag" type="play"
+      args="--clock $(arg bag_filename)" />
+
+</launch>
+```
+
+在进行纯定位时，没有启动这样一个代码，就是没有生成map这个topic的地图，
+
+![image-20241224191856343](assets\子图.png)
+
+区别：![image-20241224192527591](assets\2d建图和纯定位.png)
+
+由于纯定位模式，默认配置是只保存三个子图啊，所以在这儿就最多只有三个子图，
+
+![image-20241224194152116](assets\纯定位默认子图.png)
+
+（不知道为啥我跑的在3个四个反复跳）
+
+![image-20241224195233333](assets\纯定位子图配置.png)
+
+然后我们看一下，通过rose topic list来可以获取到所有的topic的名字。
+
+```bash
+ht_llibra@ht-llibra:~$ rostopic list
+/clicked_point
+/clock
+/constraint_list
+/imu
+/initialpose
+/landmark_poses_list
+/move_base_simple/goal
+/rosout
+/rosout_agg
+/rslidar_points
+/scan_matched_points2
+/submap_list
+/tf
+/tf_static
+/trajectory_node_list
+```
+
+可以发现没有map这个话题。
+
+**为什么纯定位模式，没有去起这么一个节点呢？**
+
+*由于一个历史原因，之前起了这个节点之后，很多人说在进行纯定位定位的时候，这个地图总是在变化的，这一变化则在进行导航时肯定会有问题，所以怎么不让地图发送变化呢？*
+
+就是不起这个cartographer_occupancy_grid_node节点。
+
+那如果想导航那该怎么办呢？把map_server这段**注释打开**，
+
+```xml
+  <!-- 启动map_server -->
+  <!-- 
+  <node name="map_server" pkg="map_server" type="map_server"
+      args="$(env HOME)/carto_ws/map/2d-1.yaml" /> 
+  -->
+```
+
+由于改了launch文件，这里需要编译一下，
+
+```bash
+ht_llibra@ht-llibra:~$ cd carto_ws/cartographer_detailed_comments_ws/
+ht_llibra@ht-llibra:~/carto_ws/cartographer_detailed_comments_ws$ ./catkin_make.sh 
+```
+
+这时候再执行纯定位的launch，然后rostopic list发现就有/map话题了，
+
+![image-20241224200024055](assets\image-20241224200024055.png)
+
+看一下/map这个topic是谁发的，
+
+```bash
+ht_llibra@ht-llibra:~$ rostopic info /map
+Type: nav_msgs/OccupancyGrid
+
+Publishers: 
+ * /map_server (http://ht-llibra:42401/)
+
+Subscribers: None
+
+```
+
+可以看到是map_server发的，
+
+这有什么区别呢? 接下来咱把Submaps给关掉，添加一个显示地图的插件，添加一下/map这个topic，
+
+![image-20241224200645328](assets\image-20241224200645328.png)
+
+Alpha改为1会更白一些，可以发现这回地图是没有变化的，
+
+![image-20241224201015872](assets\纯定位map话题.png)
+
+这个时候我们把Map取消，定义Submaps，会发现Submaps还是变化的（我的是没变化的，但看的视频在变换...）。
+
+
+
+### **三维建图**
+
+```bash
+roslaunch cartographer_ros lx_rs16_3d.launch
+```
+
+不知道为啥报错！大概是内存越界或缓冲区溢出或者rviz版本问题...虚拟机还是不太行!
+
+```bash
+ ht_llibra@ht-llibra:~$ roslaunch cartographer_ros lx_rs16_3d.launch
+... logging to /home/ht_llibra/.ros/log/8723e8b8-c1f1-11ef-aa04-000c29a9653a/roslaunch-ht-llibra-21351.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://ht-llibra:32869/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: melodic
+ * /rosversion: 1.14.13
+ * /use_sim_time: True
+
+NODES
+  /
+    cartographer_node (cartographer_ros/cartographer_node)
+    playbag (rosbag/play)
+    rviz (rviz/rviz)
+
+auto-starting new master
+process[master]: started with pid [21361]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 8723e8b8-c1f1-11ef-aa04-000c29a9653a
+process[rosout-1]: started with pid [21372]
+started core service [/rosout]
+process[cartographer_node-2]: started with pid [21375]
+process[rviz-3]: started with pid [21376]
+process[playbag-4]: started with pid [21377]
+[ INFO] [1735042857.615601133]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer_ros/configuration_files/lx_rs16_3d.lua' for 'lx_rs16_3d.lua'.
+[ INFO] [1735042857.617167102]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/map_builder.lua' for 'map_builder.lua'.
+[ INFO] [1735042857.617224705]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/map_builder.lua' for 'map_builder.lua'.
+[ INFO] [1735042857.617282517]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/pose_graph.lua' for 'pose_graph.lua'.
+[ INFO] [1735042857.617360503]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/pose_graph.lua' for 'pose_graph.lua'.
+[ INFO] [1735042857.617586498]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/trajectory_builder.lua' for 'trajectory_builder.lua'.
+[ INFO] [1735042857.617619361]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/trajectory_builder.lua' for 'trajectory_builder.lua'.
+[ INFO] [1735042857.617722587]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/trajectory_builder_2d.lua' for 'trajectory_builder_2d.lua'.
+[ INFO] [1735042857.617752077]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/trajectory_builder_2d.lua' for 'trajectory_builder_2d.lua'.
+[ INFO] [1735042857.617928403]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/trajectory_builder_3d.lua' for 'trajectory_builder_3d.lua'.
+[ INFO] [1735042857.617960107]: I1224 20:20:57.000000 21375 configuration_file_resolver.cc:53] Found '/home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer/configuration_files/trajectory_builder_3d.lua' for 'trajectory_builder_3d.lua'.
+[ INFO] [1735042857.629688818]: I1224 20:20:57.000000 21375 map_builder_bridge.cc:156] Added trajectory with ID '0'.
+[ INFO] [1735042857.951415750, 1606808649.538669897]: I1224 20:20:57.000000 21375 ordered_multi_queue.cc:265] All sensor data for trajectory 0 is available starting at '637424054495384530'.
+[ INFO] [1735042857.973989186, 1606808649.559946144]: I1224 20:20:57.000000 21375 pose_graph_3d.cc:136] Inserted submap (0, 0).
+*** stack smashing detected ***: <unknown> terminated
+================================================================================REQUIRED process [rviz-3] has died!
+process has died [pid 21376, exit code -6, cmd /opt/ros/melodic/lib/rviz/rviz -d /home/ht_llibra/carto_ws/cartographer_detailed_comments_ws/install_isolated/share/cartographer_ros/configuration_files/lx_3d.rviz __name:=rviz __log:=/home/ht_llibra/.ros/log/8723e8b8-c1f1-11ef-aa04-000c29a9653a/rviz-3.log].
+log file: /home/ht_llibra/.ros/log/8723e8b8-c1f1-11ef-aa04-000c29a9653a/rviz-3*.log
+Initiating shutdown!
+================================================================================
+[playbag-4] killing on exit
+[rviz-3] killing on exit
+[cartographer_node-2] killing on exit
+F1224 20:21:01.074517 21395 problem_impl.cc:635] Parameter block not found: 0x7f34f4000e00. You must add the parameter block to the problem before you can set a lower bound on one of its components.
+*** Check failure stack trace: ***
+    @     0x7f35331680cd  google::LogMessage::Fail()
+    @     0x7f3533169f33  google::LogMessage::SendToLog()
+    @     0x7f3533167c28  google::LogMessage::Flush()
+    @     0x7f353316a999  google::LogMessageFatal::~LogMessageFatal()
+    @     0x7f35334cc1bc  ceres::internal::ProblemImpl::SetParameterLowerBound()
+    @     0x5620575a79d6  (unknown)
+    @     0x56205755b5a0  (unknown)
+    @     0x56205755c008  (unknown)
+    @     0x56205757f0d4  (unknown)
+    @     0x5620575f05e1  (unknown)
+    @     0x562057514f7c  (unknown)
+    @     0x7f3530af66df  (unknown)
+    @     0x7f35323756db  start_thread
+    @     0x7f35301b361f  clone
+[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+done
+
+```
+
+
+
+**！！！！！！！！！！！！！！！！！！！！！！！**
+
+可显示实时三维点云地图（报错打不开暂时没实现），
+
+![image-20241224203153138](assets\截图.png)
+
+
+
+保存3D地图，执行工作空间里的finish_slam_3s.sh，
+
+![image-20241224203717459](assets\image-20241224203717459.png)
+
+
+
+### **2d栅格地图**和3d点云地图
+
+![image-20241224204631363](assets\image-20241224204631363.png)
+
+**2D栅格地图**
+
+```bash
+roslaunch cartographer_ros assets_writer_2d.launch
+```
+
+![image-20241224204735173](assets\image-20241224204735173.png)
+
+目的是根据与pbstream文件和之前的bag文件来再生成一个map.pgm的地图图片，会在map文件夹
+
+![image-20241224205020351](assets\image-20241224205020351.png)
+
+![image-20241224205334692](assets\image-20241224205334692.png)
+
+可以看到最终生成的地图如上，由于是多线16线点云，还有打到地面上的点也一并生成了地图，所以这样这种方式生成的地图不可用。
+
+
+
+**3d点云地图**
+
+```bash
+roslaunch cartographer_ros assets_writer_3d.launch
+```
+
+由于前面3d建图rviz打开失败没有成功生成3d-1.pbstream文件，所以这里也用不了。
+
+
+
+下面看看lua文件怎么设置的，
+
+![image-20241224210658311](assets\2d3dlua.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 命令功能汇总
+
+```bash
+##  运行相关命令
+
+其中的bag文件可以在我的公众号: 从零开始搭SLAM  里找到，在底部菜单栏的数据集链接里
+
+### 2d建图指令
+`roslaunch cartographer_ros lx_rs16_2d_outdoor.launch`
+
+### 保存2d轨迹,并生成ros格式的地图
+`./finish_slam_2d.sh`
+
+### 纯定位模式
+`roslaunch cartographer_ros lx_rs16_2d_outdoor_localization.launch`
+
+### 3d建图指令
+`roslaunch cartographer_ros lx_rs16_3d.launch`
+
+### 保存3d轨迹
+`./finish_slam_3d.sh`
+
+### 使用asset生成ros格式的2d栅格地图
+`roslaunch cartographer_ros assets_writer_2d.launch`
+
+### 使用asset生成3d点云地图
+`roslaunch cartographer_ros assets_writer_3d.launch`
+
+### landmark使用示例
+`roslaunch cartographer_ros landmark_mir_100.launch`
+
+
+##  实时显示三维点云地图与保存地图的功能简述
+显示三维点云地图需要是在建3d轨迹的情况下才可以显示, 点云地图默认发布在 `/point_cloud_map` 话题中.
+
+默认关闭了保存pcd格式点云的功能, 如需要这个功能, 需要将node.cc文件的第1029行的 `constexpr bool save_pcd = false;` 改成true.
+
+编译之后在建图结束后通过调用 `/write_state` 服务, 会在生成pbstream文件的同时也对pcd文件进行保存, 保存目录与pbstream文件同一个文件夹.
+```
 
