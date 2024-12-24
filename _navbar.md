@@ -40,6 +40,7 @@
   * [ROS官方文档](https://docs.ros.org/)
   * [赵虚左ROS1文档](http://www.autolabor.com.cn/book/ROSTutorials/)
   * [ROS2鱼香](https://fishros.com/)
+  * [动手学ROS2](https://fishros.com/d2lros2foxy/#/)
   * [STM32野火](http://products.embedfire.com)
   * [YOLO官方文档](https://docs.ultralytics.com/zh)
   * [pytorch官方文档](https://pytorch.org/)
@@ -76,6 +77,8 @@
 * ❤️实用小工具
   * [🔥drawio](https://www.drawio.com/)
   * [🔥cobalt](https://cobalt.tools/)
+  * [🔥fastsend](https://fastsend.ing/zh)
+  * [tiktokvoice](https://tiktokvoice.net/zh)
   * [koodo阅读器](https://koodo.960960.xyz/zh)
   * [bitdock](http://www.bitdock.cn/)
   * [quicker](https://getquicker.net/)
@@ -89,6 +92,7 @@
 * 🐟摸鱼
   * [🔥Github/PTF](https://github.com/ruanjianshi/ptf)
   * [坦克大战指南](https://github.com/ruanjianshi/ptf/blob/main/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91.pdf)
+  * [劳法计算器](https://web.laofa.com/calculator/)
   * [微信公众号](https://mp.weixin.qq.com/)
   * [老游戏在线玩](https://zaixianwan.app/)
   * [可可影视](https://www.keke1.app/)
@@ -103,6 +107,7 @@
 
 * 🍁github好玩项目
   * [🔥Genesis](https://github.com/Genesis-Embodied-AI/Genesis)
+  * [🔥FastSend](https://github.com/ShouChenICU/FastSend)
   * [🔥Phil Wang](https://github.com/lucidrains)
   * [🔥小王同学在积累](https://github.com/AccumulateMore)
   * [Ackerman-Car-ROS2](https://github.com/zhaokexue/Ackerman-Car-ROS2)
@@ -113,6 +118,7 @@
   * [thefuck](https://github.com/nvbn/thefuck)
   * [KeymouseGo](https://github.com/taojy123/KeymouseGo)
   * [moemail](https://github.com/beilunyang/moemail)
+  * [medicine](https://github.com/lvwzhen/medicine)
   * [anylabeling](https://github.com/vietanhdev/anylabeling)
   * [X-AnyLabeling](https://github.com/CVHub520/X-AnyLabeling)
   * [programming-books](https://github.com/justjavac/free-programming-books-zh_CN)
@@ -124,6 +130,9 @@
   * [GRCNN](https://github.com/Jianf-Wang/GRCNN)
   * [robotic-grasping](https://github.com/skumra/robotic-grasping)
   * [grasp-anything](https://airvlab.github.io/grasp-anything/docs/code/)
+  * [全是漫画](https://github.com/hongchacha/cartoon#start-of-content)
+  * [PPress](https://github.com/yandaozi/PPress)
+  
   
 
 
