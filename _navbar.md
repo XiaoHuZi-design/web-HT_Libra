@@ -43,7 +43,7 @@
   * [ROS官方文档](https://docs.ros.org/)
   * [赵虚左ROS1文档](http://www.autolabor.com.cn/book/ROSTutorials/)
   * [ROS2鱼香](https://fishros.com/)
-  * [动手学ROS2](https://fishros.com/d2lros2foxy/#/)
+  * [动手学ROS2](https://fishros.com/d2lros2/#/)
   * [STM32野火](http://products.embedfire.com)
   * [YOLO官方文档](https://docs.ultralytics.com/zh)
   * [pytorch官方文档](https://pytorch.org/)
