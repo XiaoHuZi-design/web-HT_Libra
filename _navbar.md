@@ -26,6 +26,7 @@
   * [🔥CSDN](https://www.csdn.net/)
   * [嘉立创](https://oshwhub.com/)
   * [知识星球](https://wx.zsxq.com/)
+  * [深蓝学院](https://www.shenlanxueyuan.com/)
   * [知乎地址](https://www.zhihu.com/)
   * [掘金地址](https://juejin.cn/)
   * [Gitee地址](https://gitee.com/explore)
