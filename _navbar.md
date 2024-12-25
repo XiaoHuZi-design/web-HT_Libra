@@ -5,6 +5,7 @@
   * [🔥Cursor](https://www.cursor.com/)
   * [🔥Windsurf](https://codeium.com/)
   * [🔥V0.dev](https://v0.dev/)
+  * [🔥bolt.new](https://bolt.new/)
   * [🔥copilot](https://github.com/copilot)
   * [🔥通义千问](https://tongyi.aliyun.com/qianwen/)
   * [百度文心一言](https://yiyan.baidu.com/)
@@ -58,6 +59,9 @@
   * [飞书](https://kcnge36u6iwd.feishu.cn/drive/home/)
   * [Gitbook](https://www.gitbook.com/)
   * [全栈试入门指南](https://maindraster.github.io/)
+  * [cursor101](https://cursor101.com/zh)
+  * [cursor教程](https://www.bookai.top/cursor/intro)
+  * [cursor教程](https://www.ifb.me/zh/blog/zh/ai/cursorrules-zhong-ji)
   
 
 
@@ -107,8 +111,7 @@
   * [白噪音生成器](https://www.whitenoisegenerator.top/)
   * [yandex搜索引擎](https://yandex.com/)
   * [luxirty搜索引擎](https://search.luxirty.com/)
-  * [cursor教程](https://www.bookai.top/cursor/intro)
-  * [cursor教程](https://www.ifb.me/zh/blog/zh/ai/cursorrules-zhong-ji)
+  
 
 * 🍁github好玩项目
   * [🔥Genesis](https://github.com/Genesis-Embodied-AI/Genesis)
