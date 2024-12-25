@@ -437,38 +437,7 @@ roslaunch cartographer_ros lx_rs16_2d_outdoor.launch
 lx_rs16_2d_outdoor.launch代码：
 
 ```xml
-<launch>
-  <!-- bag的地址与名称 -->
-  <arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/>
-
-  <!-- 使用bag的时间戳 -->
-  <param name="/use_sim_time" value="true" />
-
-  <!-- 启动cartographer -->
-  <node name="cartographer_node" pkg="cartographer_ros"
-      type="cartographer_node" args="
-          -configuration_directory $(find cartographer_ros)/configuration_files
-          -configuration_basename lx_rs16_2d_outdoor.lua"
-      output="screen">
-    <remap from="points2" to="rslidar_points" />
-    <remap from="scan" to="front_scan" />
-    <remap from="odom" to="odom_scout" />
-    <remap from="imu" to="imu" />
-  </node>
-
-  <!-- 生成ros格式的地图 -->
-  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
-      type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
-
-  <!-- 启动rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" required="true"
-      args="-d $(find cartographer_ros)/configuration_files/lx_2d.rviz" />
-
-  <!-- 启动rosbag -->
-  <node name="playbag" pkg="rosbag" type="play"
-      args="--clock $(arg bag_filename)" />
-
-</launch>
+注意xml网页显示，需要把 尖括号 改成 &lt;和&gt;
 ```
 
 ```xml
@@ -631,43 +600,42 @@ rosrun cartographer_ros cartographer_pbstream_to_ros_map \
 lx_rs16_2d_outdoor_localization.launch文件：
 
 ```xml
-<launch>
-  <!-- bag的地址与名称 -->
-  <arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/>
-  <!-- pbstream的地址与名称 -->
-  <arg name="load_state_filename" default="$(env HOME)/carto_ws/map/2d-1.pbstream"/>
+&lt;launch&gt;
+  &lt;!-- bag的地址与名称 --&gt;
+  &lt;arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/&gt;
+  &lt;!-- pbstream的地址与名称 --&gt;
+  &lt;arg name="load_state_filename" default="$(env HOME)/carto_ws/map/2d-1.pbstream"/&gt;
 
-  <!-- 使用bag的时间戳 -->
-  <param name="/use_sim_time" value="true" />
+  &lt;!-- 使用bag的时间戳 --&gt;
+  &lt;param name="/use_sim_time" value="true" /&gt;
 
-  <!-- 启动cartographer -->
-  <node name="cartographer_node" pkg="cartographer_ros"
+  &lt;!-- 启动cartographer --&gt;
+  &lt;node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
           -configuration_directory $(find cartographer_ros)/configuration_files
           -configuration_basename lx_rs16_2d_outdoor_localization.lua
           -load_state_filename $(arg load_state_filename)"
-      output="screen">
-    <remap from="points2" to="rslidar_points" />
-    <remap from="scan" to="front_scan" />
-    <remap from="odom" to="odom_scout" />
-    <remap from="imu" to="imu" />
-  </node>
+      output="screen"&gt;
+    &lt;remap from="points2" to="rslidar_points" /&gt;
+    &lt;remap from="scan" to="front_scan" /&gt;
+    &lt;remap from="odom" to="odom_scout" /&gt;
+    &lt;remap from="imu" to="imu" /&gt;
+  &lt;/node&gt;
 
-  <!-- 启动map_server -->
-  <!-- 
-  <node name="map_server" pkg="map_server" type="map_server"
-      args="$(env HOME)/carto_ws/map/2d-1.yaml" /> 
-  -->
+  &lt;!-- 启动map_server --&gt;
+  &lt;!-- 
+  &lt;node name="map_server" pkg="map_server" type="map_server"
+      args="$(env HOME)/carto_ws/map/2d-1.yaml" /&gt; 
+  --&gt;
 
-  <!-- 启动rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" required="true"
-      args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+  &lt;!-- 启动rviz --&gt;
+  &lt;node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" /&gt;
 
-  <!-- 启动rosbag -->
-  <node name="playbag" pkg="rosbag" type="play"
-      args="--clock $(arg bag_filename)" />
-
-</launch>
+  &lt;!-- 启动rosbag --&gt;
+  &lt;node name="playbag" pkg="rosbag" type="play"
+      args="--clock $(arg bag_filename)" /&gt;
+&lt;/launch&gt;
 ```
 
 在进行纯定位时，没有启动这样一个代码，就是没有生成map这个topic的地图，
@@ -716,11 +684,11 @@ ht_llibra@ht-llibra:~$ rostopic list
 那如果想导航那该怎么办呢？把map_server这段**注释打开**，
 
 ```xml
-  <!-- 启动map_server -->
-  <!-- 
-  <node name="map_server" pkg="map_server" type="map_server"
-      args="$(env HOME)/carto_ws/map/2d-1.yaml" /> 
-  -->
+&lt;!-- 启动map_server --&gt;
+&lt;!-- 
+  &lt;node name="map_server" pkg="map_server" type="map_server"
+      args="$(env HOME)/carto_ws/map/2d-1.yaml" /&gt; 
+--&gt;
 ```
 
 由于改了launch文件，这里需要编译一下，
