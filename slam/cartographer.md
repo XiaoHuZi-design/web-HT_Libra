@@ -16,6 +16,14 @@ wget http://fishros.com/install -O fishros && . fishros
 
 **提取码：**slam
 
+vmware虚拟机双向复制粘贴：
+
+```bash
+sudo apt-get install open-vm-tools
+sudo apt-get install open-vm-tools-desktop
+sudo reboot
+```
+
 
 
 # 安装cartographer
