@@ -471,6 +471,40 @@ lx_rs16_2d_outdoor.launch代码：
 </launch>
 ```
 
+```xml
+&lt;launch&gt;
+  &lt;!-- bag的地址与名称 --&gt;
+  &lt;arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/&gt;
+
+  &lt;!-- 使用bag的时间戳 --&gt;
+  &lt;param name="/use_sim_time" value="true" /&gt;
+
+  &lt;!-- 启动cartographer --&gt;
+  &lt;node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_ros)/configuration_files
+          -configuration_basename lx_rs16_2d_outdoor.lua"
+      output="screen"&gt;
+    &lt;remap from="points2" to="rslidar_points" /&gt;
+    &lt;remap from="scan" to="front_scan" /&gt;
+    &lt;remap from="odom" to="odom_scout" /&gt;
+    &lt;remap from="imu" to="imu" /&gt;
+  &lt;/node&gt;
+
+  &lt;!-- 生成ros格式的地图 --&gt;
+  &lt;node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.05" /&gt;
+
+  &lt;!-- 启动rviz --&gt;
+  &lt;node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_ros)/configuration_files/lx_2d.rviz" /&gt;
+
+  &lt;!-- 启动rosbag --&gt;
+  &lt;node name="playbag" pkg="rosbag" type="play"
+      args="--clock $(arg bag_filename)" /&gt;
+&lt;/launch&gt;
+```
+
 
 
 **安装vscode开发环境**
