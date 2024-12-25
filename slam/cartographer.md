@@ -1,4 +1,4 @@
-
+# 资料
 
 数据包保存方法：[ROS入门：保存和回放数据（bag文件的使用） - 北极星！ - 博客园](https://www.cnblogs.com/zhjblogs/p/16512501.html)
 
@@ -833,7 +833,7 @@ done
 
 
 
-### **2d栅格地图**和3d点云地图
+### 2d栅格地图和3d点云地图
 
 ![image-20241224204631363](assets\image-20241224204631363.png)
 
@@ -883,17 +883,264 @@ pcl_viewer b3-1.pcd
 
 
 
-
-
-
-
-下面看看lua文件怎么设置的，
+下面看看2d和3d的lua文件分别是怎么设置的，
 
 ![image-20241224210658311](assets\2d3dlua.png)
 
 
 
+### landmark使用示例
 
+**执行一下landmarks_demo_uncalibrated.bag**
+
+```bash
+roslaunch cartographer_ros landmark_mir_100.launch
+```
+
+![image-20241225133029784](assets\landmarks1.png)
+
+![image-20241225133218600](assets\landmarks1放大版.png)
+
+在views栏（没有就点击panels-->views）可以转换一下视角，可以看到一些小球，就是landmarks的一个可视化，
+
+![image-20241225133511764](assets\landmarks_view.png)
+
+
+
+可以看到随着机器人的不断运动，小球的位置也是在发生变化的，新增的小球约束也发生了变化。
+
+
+
+# 如何配置Launch与Lua文件
+
+### 第一步 了解 bag 文件
+
+播放 bag 文件需要在 **bag** **的文件夹内**启动五个终端
+
+*• **第一个**终端执行 roscore*
+
+*• **第二个**终端执行 rosbag info rslidar-outdoor-gps.bag了解 bag 中 topic 的名称与类型*
+
+*• **第三个**执行 rosbag play rslidar-outdoor-gps.bag*
+
+*• **第四个**终端执行 rqt，了解 bag 中的 tf 树*
+
+*注意, rqt 的所有显示插件都在菜单栏的 plugins 内, 再点击 visualization, 再点击 tf* 
+
+*tree, 即可显示视频中的 tf 树的可视化界面.*
+
+*• **第五个**终端执行 rviz*
+
+*可视化雷达数据与 tf 数据.*
+
+*rviz 左侧最顶上的 Fixed frame 除了下拉菜单可以选择之外, 还是**可以手动输入的**,* 
+
+*现在手动输入成 odom ,*
+
+*rviz 左侧下方的 Add 按钮, 可以添加显示的插件, 自己选择添加 pointcloud2,* 
+
+*laserscan 等格式的数据, 之后把插件订阅的 topic 选择一下, 如果不会就自己摸索一下,* 
+
+*很简单的.*
+
+![image-20241225140455767](assets\image-20241225140455767.png)
+
+![image-20241225140556264](assets\image-20241225140556264.png)
+
+按空格停止播放，再按空格继续播放，停止后按s单步播放
+
+![image-20241225140959223](assets\image-20241225140959223.png)
+
+![image-20241225141206589](assets\image-20241225141206589.png)
+
+![image-20241225141900311](assets\image-20241225141900311.png)
+
+
+
+
+
+![image-20241225142235154](assets\image-20241225142235154.png)
+
+![image-20241225142448489](assets\image-20241225142448489.png)
+
+可以看到odom和机器人的一个相对位置是在发生变化的，即odom指向footprint的一个tf是发生变化的，它就叫TF（transform），机器人上几个相对不变的就是静态TF。
+
+![image-20241225144008928](assets\6线点云数据.png)
+
+![image-20241225144458743](D:\新桌面\笔记\BLOG-HT\slam\assets\image-20241225144458743.png)
+
+
+
+### 第二步 配置 launch 文件
+
+launch 文件中需要如下几个设置
+
+• bag 文件的地址与 bag 文件的名字
+
+• lua 文件的名字
+
+• topic 需要 remap 成 bag 文件中发布的 topic
+
+
+
+新建一个test.launch文件，把之前的lx_rs16_2d_outdoor.launch复制一下，
+
+```xml
+&lt;!--
+  Copyright 2016 The Cartographer Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0 
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+--&gt;
+
+&lt;launch&gt;
+  &lt;!-- bag的地址与名称 --&gt;
+  &lt;arg name="bag_filename" default="$(env HOME)/bagfiles/rslidar-outdoor-gps-notf.bag"/&gt;
+
+  &lt;!-- 使用bag的时间戳 --&gt;
+  &lt;param name="/use_sim_time" value="true" /&gt;
+
+  &lt;!-- 启动cartographer --&gt;
+  &lt;node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_ros)/configuration_files
+          -configuration_basename lx_rs16_2d_outdoor.lua"
+      output="screen"&gt;
+    &lt;remap from="points2" to="rslidar_points" /&gt;
+    &lt;remap from="scan" to="front_scan" /&gt;
+    &lt;remap from="odom" to="odom_scout" /&gt;
+    &lt;remap from="imu" to="imu" /&gt;
+  &lt;/node&gt;
+
+  &lt;!-- 生成ros格式的地图 --&gt;
+  &lt;node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.05" /&gt;
+
+  &lt;!-- 启动rviz --&gt;
+  &lt;node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_ros)/configuration_files/lx_2d.rviz" /&gt;
+
+  &lt;!-- 启动rosbag --&gt;
+  &lt;node name="playbag" pkg="rosbag" type="play"
+      args="--clock $(arg bag_filename)" /&gt;
+&lt;/launch&gt;
+
+```
+
+然后我们针对刚才做可视化的这样一个bag来做一下适配，
+
+![image-20241225152821406](assets\image-20241225152821406.png)
+
+改一下这两个地方。
+
+
+
+### 第三步 配置 lua 文件
+
+![image-20241225153020997](assets\lua配置.png)
+
+新建一个test.lua文件，从backpack.lua文件复制
+
+```lua
+-- Copyright 2016 The Cartographer Authors
+--
+-- Licensed under the Apache License, Version 2.0 (the "License");
+-- you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+--
+--      http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS,
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and
+-- limitations under the License.
+
+include "map_builder.lua"
+include "trajectory_builder.lua"
+
+options = {
+  map_builder = MAP_BUILDER,
+  trajectory_builder = TRAJECTORY_BUILDER,
+  map_frame = "map",
+  tracking_frame = "base_link",
+  published_frame = "base_link",
+  odom_frame = "odom",
+  provide_odom_frame = true,
+  publish_frame_projected_to_2d = false,
+  use_pose_extrapolator = true,
+  use_odometry = false,
+  use_nav_sat = false,
+  use_landmarks = false,
+  num_laser_scans = 0,
+  num_multi_echo_laser_scans = 1,
+  num_subdivisions_per_laser_scan = 10,
+  num_point_clouds = 0,
+  lookup_transform_timeout_sec = 0.2,
+  submap_publish_period_sec = 0.3,
+  pose_publish_period_sec = 5e-3,
+  trajectory_publish_period_sec = 30e-3,
+  rangefinder_sampling_ratio = 1.,
+  odometry_sampling_ratio = 1.,
+  fixed_frame_pose_sampling_ratio = 1.,
+  imu_sampling_ratio = 1.,
+  landmarks_sampling_ratio = 1.,
+}
+
+MAP_BUILDER.use_trajectory_builder_2d = true
+TRAJECTORY_BUILDER_2D.num_accumulated_range_data = 10
+
+return options
+
+```
+
+TF树最上面的一个是published_frame
+
+![image-20241225154435845](assets\image-20241225154435845.png)
+
+![image-20241225155106356](assets\image-20241225155106356.png)
+
+​		多线点云会打到地面，如果你想这时候去建二维地图，但是你要使用这个全部的点云数据区建图呢，这个打到地面上的一圈一圈的点也会被建到地图里，这时候你就会发现地图上全是一圈一圈的印，那这个地图就没法使用，所以在你订阅多线点云数据的时候，这个值也要设置为大于0，那这里就出现一个矛盾：当你既有单线又有多线的时候，这个min_z就需要有一定的考量了，你是要地面，还是要单线，你要是想把地面过滤掉，你单线也会同时过滤掉。这里我们先把min_z设置为-0.1。
+
+​		重新编译一下，
+
+```bash
+ roslaunch cartographer_ros test.launch 
+```
+
+​		可以发现终端一直有报错，但不影响建图，可能是既订阅了单线又订阅了多线的原因。
+
+由于设置的min_z为-0.1，可以发现点云没有打在地上的或者说很少，因为这个雷达是装在高处的，这个z坐标是相对于雷达自身的，所以它这个点就会很少出现在这个雷达下面，
+
+![image-20241225164007763](assets\image-20241225164007763.png)
+
+![image-20241225164457396](assets\image-20241225164457396.png)
+
+
+
+只用多线不用单线，min_z改为0.2，也就是0.2以下的都不要
+
+```lua
+  num_laser_scans = 0,
+  num_point_clouds = 1,
+```
+
+重新编译一下，再次运行，可以发现这次终端不报错，说明原因就是之前说的同时订阅了单线和多线的原因。
+
+![image-20241225165520408](assets\image-20241225165520408.png)
+
+![image-20241225170020778](assets\image-20241225170020778.png)
+
+这个显示出来的点就是过滤掉的点，就是过滤之后的点会比之前高了。
 
 
 
