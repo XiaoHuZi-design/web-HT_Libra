@@ -376,6 +376,8 @@ rosdepc install --from-paths src -y --ignore-src
 
 ---
 
+注：有点玄学，我在老油条电脑上也出现，但是改了线程不行，然后先鱼香一键（虽然失败）然后再次./catkin_make.sh编译却成功。
+
 **编译源码的方式使用carto**
 
 首先在carto_ws下新建工作空间
