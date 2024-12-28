@@ -1,1 +1,1 @@
-![高木同学](D:/%E6%96%B0%E6%A1%8C%E9%9D%A2/%E9%AB%98%E6%9C%A8%E5%90%8C%E5%AD%A6.jpg)
+![高木同学](https://gitee.com/XiaoHuZi23/tuchuang/raw/master/高木同学.jpg)
