@@ -3,3 +3,5 @@
 
 
 ![001_pygame的init和quit-w254](https://gitee.com/XiaoHuZi23/tuchuang/raw/master/clip_image002-1547608564071.jpg)
+
+![001_pygame的init和quit-w254](http://qxmapdepot.xiaoq11.cn/picture/clip_image002-1547608564071.jpg)
