@@ -44,7 +44,6 @@
   * [cartographer安装与运行](/slam/cartographer.md)
   * [cartographer_ros代码入门](slam/cartographer_ros代码入门.md)
   * [test](slam/test.md)
-  * [test1](slam/test2.md)
 
 * STM32
   * [STM32学习](/STM32/STM32.md)

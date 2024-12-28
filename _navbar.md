@@ -112,6 +112,7 @@
   * [白噪音生成器](https://www.whitenoisegenerator.top/)
   * [yandex搜索引擎](https://yandex.com/)
   * [luxirty搜索引擎](https://search.luxirty.com/)
+  * [在线打字练习](https://www.type.fun/)
   
 
 * 🍁github好玩项目
