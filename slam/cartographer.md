@@ -223,7 +223,7 @@ sudo ninja install
 
 
 
-**下载cartography注释后的源码**
+**下载cartographer注释后的源码**
 
 https://github.com/xiangli0608/cartographer_detailed_comments_ws
 
@@ -324,7 +324,7 @@ ht_llibra@ht-llibra:~/carto_ws/cartographer_detailed_comments_ws$
 
 
 
-另外鱼香ROS也可以一键安装cartography，ubantu20.04双系统尝试可用
+另外鱼香ROS也可以一键安装cartographer，ubantu20.04双系统尝试可用
 
 ------------------------------------------------------------------------------------------------------
 
@@ -376,7 +376,7 @@ rosdepc install --from-paths src -y --ignore-src
 
 ---
 
-注：有点玄学，我在老油条电脑上也出现，但是改了线程不行，然后先鱼香一键（虽然失败）然后再次./catkin_make.sh编译却成功。
+注：有点玄学，我在另一台电脑上也出现，但是改了线程不行，然后先鱼香一键（虽然失败）然后再次./catkin_make.sh编译却成功。
 
 **编译源码的方式使用carto**
 
@@ -874,7 +874,7 @@ sudo apt-get install pcl-tools
 ```
 
 ```
-pcl_viewer b3-1.pcd
+pcl_viewer b3_1.pcd
 ```
 
 ![image-20241224220041096](assets\临时1.png)

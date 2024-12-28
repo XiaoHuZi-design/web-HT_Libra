@@ -41,7 +41,10 @@
   * [航点导航插件](/ROS学习/航点导航插件.md)
   * [相机话题](/ROS学习/相机话题.md)
 * slam
-  * [cartographer](/slam/cartographer.md)
+  * [cartographer安装与运行](/slam/cartographer.md)
+  * [cartographer_ros代码入门](slam/cartographer_ros代码入门.md)
+  * [test](slam/test.md)
+
 * STM32
   * [STM32学习](/STM32/STM32.md)
 * 深度学习
